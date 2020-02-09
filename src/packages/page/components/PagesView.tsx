@@ -3,15 +3,15 @@ import Button from '@material-ui/core/Button';
 import documentTitleBuilder from '../../../utils/DocumentTitleBuilder';
 import localizer from '../../../utils/Localizer';
 
-export interface NodesViewProps {}
+export interface PagesViewProps {}
 
-const NodesView = (props: NodesViewProps) => {
+const PagesView = (props: PagesViewProps) => {
   useEffect(() => {
     document.title = documentTitleBuilder.buildTitle([localizer.localeMap.routes.pages]);
   });
 
   return (
-    <div className="NodesView">
+    <div className="PagesView">
       <h1>Pages</h1>
       <Button variant="contained" color="primary">
         Hello World
@@ -20,4 +20,4 @@ const NodesView = (props: NodesViewProps) => {
   );
 }
 
-export default NodesView;
+export default PagesView;

@@ -1,4 +1,4 @@
-export class Node {
+export class Page {
   id: string;
   name: string;
 
