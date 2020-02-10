@@ -1,11 +1,6 @@
 import React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import PersonIcon from '@material-ui/icons/Person';
 import { Page } from '../entities/Page';
+import CastAppBar from '../../shared/components/CastAppBar';
 
 export interface PageHeaderProps {
   page?: Page;
@@ -14,19 +9,7 @@ export interface PageHeaderProps {
 const PageHeader = (props: PageHeaderProps) => {
   return (
     <div className="PageHeader">
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton edge="start" color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6">
-            { props.page ? props.page.name : '' }
-          </Typography>
-          <IconButton edge="end" color="inherit" aria-label="profile">
-            <PersonIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <CastAppBar title={props.page ? props.page.name : undefined}></CastAppBar>
     </div>
   );
 }
