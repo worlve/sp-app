@@ -16,9 +16,7 @@ interface PageState {
 class PageView extends React.Component<PageViewProps, PageState> {
   constructor(props: PageViewProps) {
     super(props);
-    this.state = {
-      page: new Page(this.props.pageId, "test")
-    };
+    this.state = {};
   }
 
   componentDidMount() {
@@ -48,7 +46,7 @@ class PageView extends React.Component<PageViewProps, PageState> {
   render() {
     if (!this.state.page) {
       return (
-        <div className="PageView">Loadings...</div>
+        <div className="PageView">Loading...</div>
       );
     }
     return (

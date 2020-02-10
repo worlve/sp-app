@@ -1,6 +1,6 @@
 import interfaceHandler from './InterfaceHandler';
 
-enum HttpRequestMethod {
+export enum HttpRequestMethod {
   Post = 'post',
   Get = 'get',
   Put = 'put',
