@@ -1,5 +1,5 @@
 import React from 'react';
-import PagesView from '../packages/page/components/PagesView';
+import PagesView from '../packages/page/PagesView';
 
 const HomeRoute = () => {
   return (

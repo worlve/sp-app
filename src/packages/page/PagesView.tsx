@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Button from '@material-ui/core/Button';
-import documentTitleBuilder from '../../../utils/DocumentTitleBuilder';
-import localizer from '../../../utils/Localizer';
+import documentTitleBuilder from '../../utils/DocumentTitleBuilder';
+import localizer from '../../utils/Localizer';
 
 export interface PagesViewProps {}
 

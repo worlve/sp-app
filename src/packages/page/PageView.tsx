@@ -1,9 +1,11 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import documentTitleBuilder from '../../../utils/DocumentTitleBuilder';
-import { Page } from '../entities/Page';
-import pageService from '../services/PageService';
-import logger from '../../../utils/Logger';
+import documentTitleBuilder from '../../utils/DocumentTitleBuilder';
+import { Page } from './entities/Page';
+import pageService from './services/PageService';
+import logger from '../../utils/Logger';
+import PageHeader from './components/PageHeader';
+import PageMain from './components/PageMain';
+import PageOptions from './components/PageOptions';
 
 export interface PageViewProps { 
   pageId: string; 
@@ -44,17 +46,11 @@ class PageView extends React.Component<PageViewProps, PageState> {
   }
 
   render() {
-    if (!this.state.page) {
-      return (
-        <div className="PageView">Loading...</div>
-      );
-    }
     return (
       <div className="PageView">
-        <h1>Page: {this.state.page.name}</h1>
-        <Button variant="contained" color="primary">
-          Hello World
-        </Button>
+        <PageHeader page={this.state.page}></PageHeader>
+        <PageMain page={this.state.page}></PageMain>
+        <PageOptions></PageOptions>
       </div>
     );
   }

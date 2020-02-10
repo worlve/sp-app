@@ -1,6 +1,6 @@
 import React from 'react';
-import PageView from '../packages/page/components/PageView';
-import PagesView from '../packages/page/components/PagesView';
+import PageView from '../packages/page/PageView';
+import PagesView from '../packages/page/PagesView';
 import { useParams } from 'react-router-dom';
 
 const PageRoute = () => {
