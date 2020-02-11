@@ -1,15 +1,23 @@
 import React from 'react';
 import { Page } from '../entities/Page';
 import CastAppBar from '../../shared/components/CastAppBar';
+import CastDrawer from '../../shared/components/CastDrawer';
 
 export interface PageHeaderProps {
   page?: Page;
 }
 
 const PageHeader = (props: PageHeaderProps) => {
+  const [openDrawer, setOpenDrawer] = React.useState(false);
+
   return (
     <div className="PageHeader">
-      <CastAppBar title={props.page ? props.page.name : undefined}></CastAppBar>
+      <CastDrawer
+        openDrawer={openDrawer}
+        onDrawerOpenChange={(open: boolean) => setOpenDrawer(open)}></CastDrawer>
+      <CastAppBar
+        title={props.page ? props.page.title : undefined}
+        onSelectMenu={() => setOpenDrawer(true)}></CastAppBar>
     </div>
   );
 }

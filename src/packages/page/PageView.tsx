@@ -42,7 +42,7 @@ class PageView extends React.Component<PageViewProps, PageState> {
   }
 
   private static setDocumentTitle(page: Page) {
-    document.title = documentTitleBuilder.buildTitle([page.name]);
+    document.title = documentTitleBuilder.buildTitle([page.title]);
   }
 
   render() {

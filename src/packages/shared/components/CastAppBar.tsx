@@ -12,6 +12,7 @@ import Slide from '@material-ui/core/Slide';
 
 export interface CastAppBarProps {
   title?: string;
+  onSelectMenu: () => void;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -35,7 +36,12 @@ const CastAppBar = (props: CastAppBarProps) => {
     <Slide appear={false} direction="down" in={!trigger}>
       <AppBar position="static" className={classes.bar}>
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+          <IconButton
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="menu"
+            onClick={props.onSelectMenu}>
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>

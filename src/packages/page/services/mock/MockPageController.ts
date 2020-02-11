@@ -27,9 +27,9 @@ export class MockPageController {
     delete this.pages[pageId];
   }
 
-  addPage(pageName: string):Page {
+  addPage(pageTitle: string):Page {
     const pageId = GuidGenerator.generate('PG', 15);
-    const page = new Page(pageId, pageName);
+    const page = new Page(pageId, pageTitle);
     this.setPage(page);
     return page;
   }

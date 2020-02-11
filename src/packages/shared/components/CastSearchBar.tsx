@@ -13,6 +13,7 @@ export interface CastSearchBarProps {
 const useStyles = makeStyles(theme => ({
   root: {
     padding: '2px 4px',
+    margin: '0 8px',
     display: 'flex',
     alignItems: 'center',
     width: 300,
