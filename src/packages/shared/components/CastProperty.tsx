@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
@@ -27,7 +27,7 @@ export interface CastPropertyProps {
   value?: string | number | undefined;
 }
 
-const CastProperty: FunctionComponent<CastPropertyProps> = (props) => {
+const CastProperty: FunctionComponent<CastPropertyProps> = (props):ReactElement => {
   const classes = useStyles();
 
   return (

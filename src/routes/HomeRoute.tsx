@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import PagesView from '../packages/page/PagesView';
 
-const HomeRoute = () => {
+const HomeRoute = ():ReactElement => {
   return (
     <PagesView></PagesView>
   );

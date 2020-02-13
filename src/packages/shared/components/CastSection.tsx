@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { TitleTag } from '../entities/TitleTag';
 import { Box, makeStyles, Divider } from '@material-ui/core';
@@ -20,7 +20,7 @@ const useStyles = makeStyles({
   }
 });
 
-const CastSection: FunctionComponent<CastSectionProps> = (props) => {
+const CastSection: FunctionComponent<CastSectionProps> = (props):ReactElement => {
   const classes = useStyles();
 
   return (

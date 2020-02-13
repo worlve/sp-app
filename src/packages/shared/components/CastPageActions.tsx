@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
-import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import DetailsIcon from '@material-ui/icons/Details';
 
@@ -17,13 +16,20 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-export interface CastPageActionsProps {}
+export interface CastPageActionsAction {
+  key: string;
+  icon: React.ReactElement;
+  tooltip: string;
+}
 
-const actions = [
-  { icon: <DeleteIcon />, name: '!!Delete' },
-];
+export interface CastPageActionsProps {
+  hidden?: boolean;
+  actions: CastPageActionsAction[];
+  defaultActionKey: string;
+  onActionSelect?: (onSelectKey: string) => void;
+}
 
-const CastPageActions = (props: CastPageActionsProps) => {
+const CastPageActions = (props: CastPageActionsProps):ReactElement => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
@@ -31,7 +37,10 @@ const CastPageActions = (props: CastPageActionsProps) => {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = (onSelectKey?: string) => {
+    if (props.onActionSelect && onSelectKey) {
+      props.onActionSelect(onSelectKey);
+    }
     setOpen(false);
   };
 
@@ -40,16 +49,17 @@ const CastPageActions = (props: CastPageActionsProps) => {
       className={classes.speedDial}
       ariaLabel="SpeedDial openIcon CastPageActions"
       icon={<SpeedDialIcon icon={<DetailsIcon />} openIcon={<EditIcon />} />}
-      onClose={handleClose}
+      onClose={() => handleClose(props.defaultActionKey)}
       onOpen={handleOpen}
       open={open}
+      hidden={props.hidden}
     >
-      {actions.map(action => (
+      {props.actions.map(action => (
         <SpeedDialAction
-          key={action.name}
+          key={action.key}
           icon={action.icon}
-          tooltipTitle={action.name}
-          onClick={handleClose}
+          tooltipTitle={action.tooltip}
+          onClick={() => handleClose(action.key)}
         />
       ))}
     </SpeedDial>

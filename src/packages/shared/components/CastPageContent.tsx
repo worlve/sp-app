@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 import Typography from '@material-ui/core/Typography';
 import CastQuoteblock from './CastQuoteblock';
 import { TitleTag } from '../entities/TitleTag';
@@ -7,15 +7,17 @@ export interface CastPageContentProps {
   titleTag?: TitleTag;
   title?: string;
   summary?: string;
+  onClickTitle?: () => void;
+  onClickSummary?: () => void;
 }
 
-const CastPageContent: FunctionComponent<CastPageContentProps> = (props) => {
+const CastPageContent: FunctionComponent<CastPageContentProps> = (props):ReactElement => {
   return (
     <React.Fragment>
-      <Typography variant={props.titleTag ? props.titleTag : TitleTag.Header1} gutterBottom>
+      <Typography onClick={props.onClickTitle} variant={props.titleTag ? props.titleTag : TitleTag.Header1} gutterBottom>
         {props.title} 
       </Typography>
-      <CastQuoteblock>
+      <CastQuoteblock onClick={props.onClickSummary}>
         {props.summary} 
       </CastQuoteblock>
       {props.children}

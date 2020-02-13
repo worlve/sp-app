@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import CastPageContent from '../../shared/components/CastPageContent';
 import { PageDetail } from '../entities/PageDetail';
 import { TitleTag } from '../../shared/entities/TitleTag';
@@ -8,7 +8,7 @@ export interface PageDetailSectionProps {
   detail: PageDetail;
 }
 
-const PageDetailSection = (props: PageDetailSectionProps) => {
+const PageDetailSection = (props: PageDetailSectionProps):ReactElement => {
   return (
     <CastPageContent
       titleTag={TitleTag.Header3}

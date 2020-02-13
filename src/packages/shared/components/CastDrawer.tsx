@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
@@ -21,7 +21,7 @@ const useStyles = makeStyles({
   },
 });
 
-const CastDrawer = (props: CastDrawerProps) => {
+const CastDrawer = (props: CastDrawerProps):ReactElement => {
   const classes = useStyles();
 
   const toggleDrawer = (open: boolean) => (

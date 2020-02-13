@@ -1,5 +1,3 @@
-import interfaceHandler from './InterfaceHandler';
-
 export enum HttpRequestMethod {
   Post = 'post',
   Get = 'get',
@@ -9,33 +7,49 @@ export enum HttpRequestMethod {
 }
 
 export class HttpHandler {
-  static async jsonGet(endpoint: string, additionalHeaders?: Record<string, string>, params?: Record<string, any>):Promise<any> {
-    return HttpHandler.jsonRequest(endpoint, HttpRequestMethod.Get, additionalHeaders, params);
+  baseEndpoint: string;
+  private _defaultHeaders: Record<string, string>;
+
+  constructor() {
+    this.baseEndpoint = '';
+    this._defaultHeaders = {};
   }
 
-  static async jsonPost(endpoint: string, additionalHeaders?: Record<string, string>, params?: Record<string, any>, bodyData?: any):Promise<any> {
-    return HttpHandler.jsonRequest(endpoint, HttpRequestMethod.Post, additionalHeaders, params, bodyData);
+  setDefaultHeader(headerName: string, headerValue: string) {
+    this._defaultHeaders[headerName] = headerValue;
   }
 
-  static async jsonPut(endpoint: string, additionalHeaders?: Record<string, string>, params?: Record<string, any>, bodyData?: any):Promise<any> {
-    return HttpHandler.jsonRequest(endpoint, HttpRequestMethod.Put, additionalHeaders, params, bodyData);
+  get defaultHeaders():Record<string, string> {
+    return { ...this._defaultHeaders };
   }
 
-  static async jsonDelete(endpoint: string, additionalHeaders?: Record<string, string>, params?: Record<string, any>):Promise<any> {
-    return HttpHandler.jsonRequest(endpoint, HttpRequestMethod.Delete, additionalHeaders, params);
+  async jsonGet(endpoint: string, additionalHeaders?: Record<string, string>, params?: Record<string, any>):Promise<any> {
+    return this.jsonRequest(endpoint, HttpRequestMethod.Get, additionalHeaders, params);
   }
 
-  static async jsonPatch(endpoint: string, additionalHeaders?: Record<string, string>, params?: Record<string, any>, bodyData?: any):Promise<any> {
-    return HttpHandler.jsonRequest(endpoint, HttpRequestMethod.Patch, additionalHeaders, params, bodyData);
+  async jsonPost(endpoint: string, additionalHeaders?: Record<string, string>, params?: Record<string, any>, bodyData?: any):Promise<any> {
+    return this.jsonRequest(endpoint, HttpRequestMethod.Post, additionalHeaders, params, bodyData);
   }
 
-  private static async jsonRequest(endpoint: string, requestMethod: HttpRequestMethod, additionalHeaders?: Record<string, string>, params?: Record<string, any>, bodyData?: any):Promise<any> {
+  async jsonPut(endpoint: string, additionalHeaders?: Record<string, string>, params?: Record<string, any>, bodyData?: any):Promise<any> {
+    return this.jsonRequest(endpoint, HttpRequestMethod.Put, additionalHeaders, params, bodyData);
+  }
+
+  async jsonDelete(endpoint: string, additionalHeaders?: Record<string, string>, params?: Record<string, any>):Promise<any> {
+    return this.jsonRequest(endpoint, HttpRequestMethod.Delete, additionalHeaders, params);
+  }
+
+  async jsonPatch(endpoint: string, additionalHeaders?: Record<string, string>, params?: Record<string, any>, bodyData?: any):Promise<any> {
+    return this.jsonRequest(endpoint, HttpRequestMethod.Patch, additionalHeaders, params, bodyData);
+  }
+
+  private async jsonRequest(endpoint: string, requestMethod: HttpRequestMethod, additionalHeaders?: Record<string, string>, params?: Record<string, any>, bodyData?: any):Promise<any> {
     const headers = {
       ...HttpHandler.defaultJsonHeaders,
-      ...interfaceHandler.defaultHeaders,
+      ...this.defaultHeaders,
       ...additionalHeaders,
     };
-    const url = new URL(`${interfaceHandler.baseEndpoint}/${endpoint}`);
+    const url = new URL(`${this.baseEndpoint}/${endpoint}`);
     if (params) {
       Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
     }
@@ -57,3 +71,5 @@ export class HttpHandler {
     };
   }
 }
+
+export default new HttpHandler();

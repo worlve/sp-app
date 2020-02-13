@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, ReactElement } from 'react';
 import Button from '@material-ui/core/Button';
 import documentTitleBuilder from '../../utils/DocumentTitleBuilder';
 import localizer from '../../utils/Localizer';
 
 export interface PagesViewProps {}
 
-const PagesView = (props: PagesViewProps) => {
+const PagesView = (props: PagesViewProps):ReactElement => {
   useEffect(() => {
     document.title = documentTitleBuilder.buildTitle([localizer.localeMap.routes.pages]);
   });

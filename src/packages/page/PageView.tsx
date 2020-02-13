@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import documentTitleBuilder from '../../utils/DocumentTitleBuilder';
 import { Page } from './entities/Page';
 import pageService from './services/PageService';
 import logger from '../../utils/Logger';
 import PageHeader from './components/PageHeader';
 import PageMain from './components/PageMain';
-import PageOptions from './components/PageOptions';
+import PageOptions, { SelectedPagePartType, SelectedPagePart } from './components/PageOptions';
 
 export interface PageViewProps { 
   pageId: string; 
@@ -13,6 +13,7 @@ export interface PageViewProps {
 
 interface PageState {
   page?: Page;
+  selectedPagePart?: SelectedPagePart;
 }
 
 class PageView extends React.Component<PageViewProps, PageState> {
@@ -45,12 +46,44 @@ class PageView extends React.Component<PageViewProps, PageState> {
     document.title = documentTitleBuilder.buildTitle([page.title]);
   }
 
-  render() {
+  private handleClickPageOverview = () => {
+    this.setState({
+      selectedPagePart: {
+        type: SelectedPagePartType.Overview,
+      },
+    });
+  }
+
+  private handleDeletePagePart = () => {
+    this.setState({
+      selectedPagePart: undefined
+    });
+  }
+
+  private handleEditPagePart = () => {
+    this.setState({
+      selectedPagePart: undefined
+    });
+  }
+
+  private handleCancelSelection = () => {
+    this.setState({
+      selectedPagePart: undefined
+    });
+  }
+
+  render():ReactElement {
     return (
       <div className="PageView">
         <PageHeader page={this.state.page}></PageHeader>
-        <PageMain page={this.state.page}></PageMain>
-        <PageOptions></PageOptions>
+        <PageMain
+          page={this.state.page}
+          onClickPageOverview={this.handleClickPageOverview}></PageMain>
+        <PageOptions
+          selectedPagePart={this.state.selectedPagePart}
+          onDeletePagePart={this.handleDeletePagePart}
+          onEditPagePart={this.handleEditPagePart}
+          onCancelSelection={this.handleCancelSelection}></PageOptions>
       </div>
     );
   }

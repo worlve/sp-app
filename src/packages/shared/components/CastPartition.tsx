@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 import { PageDetailPartition, PageDetailPartitionType, PageDetailPartitionLink, PageDetailPartitionRelation, PageDetailPartitionImage, PageDetailPartitionColor, PageDetailPartitionUnorderedList, PageDetailPartitionOrderedList } from '../../page/entities/PageDetailPartition';
 import { Typography, Link, Divider, makeStyles, Box } from '@material-ui/core';
 import CastQuoteblock from './CastQuoteblock';
@@ -19,7 +19,7 @@ const useStyles = makeStyles({
   },
 });
 
-const CastPartition: FunctionComponent<CastPartitionProps> = (props) => {
+const CastPartition: FunctionComponent<CastPartitionProps> = (props):ReactElement => {
   const classes = useStyles();
 
   const unexpectedPartitionClass = ():Error => {
@@ -30,7 +30,7 @@ const CastPartition: FunctionComponent<CastPartitionProps> = (props) => {
     return new Error(`partition: ${props.partition.type} did not have 'value' or 'partitions' properties when expected`);
   }
 
-  const renderPartitions = () => {
+  const renderPartitions = ():ReactElement => {
     return (
       <React.Fragment>
         {props.partition.partitions.map((partition, index) => (
@@ -42,7 +42,7 @@ const CastPartition: FunctionComponent<CastPartitionProps> = (props) => {
     )
   }
 
-  const renderPartition = () => {
+  const renderPartition = ():ReactElement => {
     switch(props.partition.type) {
       case PageDetailPartitionType.Header1:
         return <Typography variant='h1' gutterBottom>{props.partition.value}</Typography>
@@ -66,7 +66,7 @@ const CastPartition: FunctionComponent<CastPartitionProps> = (props) => {
         throw unexpectedPartitionProperties();
       case PageDetailPartitionType.Text:
         if (props.partition.hasValue) {
-          return props.partition.value;
+          return <span>props.partition.value</span>;
         }
         if (props.partition.hasPartitions) {
           return renderPartitions();

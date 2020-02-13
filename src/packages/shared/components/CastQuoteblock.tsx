@@ -1,9 +1,11 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, ReactElement } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 
-export interface CastQuoteblockProps {}
+export interface CastQuoteblockProps {
+  onClick?: () => void;
+}
 
 const useStyles = makeStyles({
   quoteblock: {
@@ -13,11 +15,11 @@ const useStyles = makeStyles({
   },
 });
 
-const CastQuoteblock: FunctionComponent<CastQuoteblockProps> = (props) => {
+const CastQuoteblock: FunctionComponent<CastQuoteblockProps> = (props):ReactElement => {
   const classes = useStyles();
 
   return (
-    <Typography className={classes.quoteblock} variant="body1" gutterBottom>
+    <Typography onClick={props.onClick} className={classes.quoteblock} variant="body1" gutterBottom>
       {props.children}
     </Typography>
   );

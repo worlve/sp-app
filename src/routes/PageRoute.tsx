@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import PageView from '../packages/page/PageView';
 import PagesView from '../packages/page/PagesView';
 import { useParams } from 'react-router-dom';
 
-const PageRoute = () => {
+const PageRoute = ():ReactElement => {
   const { pageId } = useParams();
   if (!pageId) {
     return (

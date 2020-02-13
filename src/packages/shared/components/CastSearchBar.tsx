@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const CastSearchBar = (props: CastSearchBarProps) => {
+const CastSearchBar = (props: CastSearchBarProps):ReactElement => {
   const classes = useStyles();
 
   return (
