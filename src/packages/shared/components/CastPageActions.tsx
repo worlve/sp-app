@@ -49,10 +49,12 @@ const CastPageActions = (props: CastPageActionsProps):ReactElement => {
       className={classes.speedDial}
       ariaLabel="SpeedDial openIcon CastPageActions"
       icon={<SpeedDialIcon icon={<DetailsIcon />} openIcon={<EditIcon />} />}
-      onClose={() => handleClose(props.defaultActionKey)}
+      onClose={() => handleClose()}
+      onClick={() => handleClose(props.defaultActionKey)}
       onOpen={handleOpen}
       open={open}
       hidden={props.hidden}
+      FabProps={{color: 'secondary'}}
     >
       {props.actions.map(action => (
         <SpeedDialAction

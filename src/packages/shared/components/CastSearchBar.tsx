@@ -5,6 +5,7 @@ import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SearchIcon from '@material-ui/icons/Search';
+import localizer from '../../../utils/Localizer';
 
 export interface CastSearchBarProps {
   title?: string;
@@ -34,7 +35,7 @@ const CastSearchBar = (props: CastSearchBarProps):ReactElement => {
       </IconButton>
       <InputBase
         className={classes.input}
-        placeholder="!!Search"
+        placeholder={localizer.localeMap.default.search}
         inputProps={{ 'aria-label': 'search' }}
       />
       <IconButton aria-label="search options">

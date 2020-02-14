@@ -11,12 +11,12 @@ export interface CastSectionProps {
 
 const useStyles = makeStyles({
   section: {
-    'margin-top': 40,
+    'margin-top': 20,
   },
   sectionTitle: {
-    'margin-top': 10,
+    'margin-top': 40,
     'text-transform': 'uppercase',
-    'color': grey[500],
+    'color': grey[400],
   }
 });
 

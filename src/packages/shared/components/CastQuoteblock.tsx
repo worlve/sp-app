@@ -4,13 +4,19 @@ import { makeStyles } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 
 export interface CastQuoteblockProps {
+  variant?: CastQuoteblockVariant;
   onClick?: () => void;
+}
+
+export enum CastQuoteblockVariant {
+  Subtitle = 'subtitle1',
+  Body = 'body1',
 }
 
 const useStyles = makeStyles({
   quoteblock: {
     'border-left': `3px solid ${grey[900]}`,
-    'background-color': grey[100],
+    'background-color': grey[50],
     'padding': 10
   },
 });
@@ -19,7 +25,7 @@ const CastQuoteblock: FunctionComponent<CastQuoteblockProps> = (props):ReactElem
   const classes = useStyles();
 
   return (
-    <Typography onClick={props.onClick} className={classes.quoteblock} variant="body1" gutterBottom>
+    <Typography onClick={props.onClick} className={classes.quoteblock} variant={props.variant ? props.variant : CastQuoteblockVariant.Body} gutterBottom>
       {props.children}
     </Typography>
   );

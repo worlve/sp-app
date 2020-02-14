@@ -6,6 +6,7 @@ import PageDetailSection from './PageDetailSection';
 import CastPage from '../../shared/components/CastPage';
 import { TitleTag } from '../../shared/entities/TitleTag';
 import CastSection from '../../shared/components/CastSection';
+import localizer from '../../../utils/Localizer';
 
 export interface PageMainProps {
   page?: Page;
@@ -30,7 +31,7 @@ const PageMain = (props: PageMainProps):ReactElement => {
         {props.page && 
           <CastSection
             titleTag={TitleTag.Header2}
-            title='!!Details'>
+            title={localizer.localeMap.page.details}>
             {/* @TODO: PageDetailSection.CastAccordian.ExpansionPanel requires 
               an element with the class of 'root' surrounding it to display properly. */}
             <div className='root'>

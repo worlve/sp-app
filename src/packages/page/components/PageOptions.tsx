@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react';
 import CastPageActions from '../../shared/components/CastPageActions';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
+import localizer from '../../../utils/Localizer';
 
 export enum SelectedPagePartType {
   Overview = 'overview',
@@ -22,8 +23,8 @@ export interface PageOptionsProps {
 interface PageOptionsState {}
 
 const actions = [
-  { icon: <CloseOutlinedIcon />, tooltip: '!!Cancel Selection', key: '!!cancel' },
-  { icon: <DeleteIcon />, tooltip: '!!Delete', key: '!!delete' },
+  { icon: <CloseOutlinedIcon />, tooltip: localizer.localeMap.page.cancelSelection, key: '!!cancel' },
+  { icon: <DeleteIcon />, tooltip: localizer.localeMap.page.deleteSelection, key: '!!delete' },
 ];
 
 

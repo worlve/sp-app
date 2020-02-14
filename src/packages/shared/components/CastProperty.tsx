@@ -14,7 +14,7 @@ const useStyles = makeStyles({
     'border-radius': 10,
     'padding': '0 10px',
     'text-transform': 'uppercase',
-    'color': grey[500],
+    'color': grey[600],
     'font-weight': 700,
   },
   propertyValue: {

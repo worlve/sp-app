@@ -9,6 +9,7 @@ import PostAddIcon from '@material-ui/icons/PostAdd';
 import LibraryBooksOutlinedIcon from '@material-ui/icons/LibraryBooksOutlined';
 import HomeIcon from '@material-ui/icons/Home';
 import { SwipeableDrawer } from '@material-ui/core';
+import localizer from '../../../utils/Localizer';
 
 export interface CastDrawerProps {
   openDrawer: boolean;
@@ -48,18 +49,18 @@ const CastDrawer = (props: CastDrawerProps):ReactElement => {
         <List>
           <ListItem button key={'home'}>
             <ListItemIcon><HomeIcon /></ListItemIcon>
-            <ListItemText primary={'!!Back to Home'} />
+            <ListItemText primary={localizer.localeMap.default.home} />
           </ListItem>
         </List>
         <Divider />
         <List>
           <ListItem button key={'getPages'}>
             <ListItemIcon><LibraryBooksOutlinedIcon /></ListItemIcon>
-            <ListItemText primary={'!!View Pages'} />
+            <ListItemText primary={localizer.localeMap.page.viewPages} />
           </ListItem>
           <ListItem button key={'createPage'}>
             <ListItemIcon><PostAddIcon /></ListItemIcon>
-            <ListItemText primary={'!!Create Page'} />
+            <ListItemText primary={localizer.localeMap.page.createPage} />
           </ListItem>
         </List>
       </div>
