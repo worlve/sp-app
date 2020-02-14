@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import { Page } from '../entities/Page';
-import CastPageContent from '../../shared/components/CastPageContent';
+import CastPageOverview from '../../shared/components/CastPageOverview';
 import CastProperty from '../../shared/components/CastProperty';
 import PageDetailSection from './PageDetailSection';
 import CastPage from '../../shared/components/CastPage';
@@ -11,37 +11,39 @@ import localizer from '../../../utils/Localizer';
 export interface PageMainProps {
   page?: Page;
   onClickPageOverview?: () => void;
+  pageOverviewSelected?: boolean;
 }
 
 const PageMain = (props: PageMainProps):ReactElement => {
   return (
     <CastPage>
-      <CastPageContent
+      <CastPageOverview
         titleTag={TitleTag.Header1}
         title={props.page ? props.page.title : undefined}
         summary={props.page ? props.page.summary : undefined}
-        onClickTitle={props.onClickPageOverview}
-        onClickSummary={props.onClickPageOverview}>
+        onClick={props.onClickPageOverview}
+        highlight={props.pageOverviewSelected} />
+      <CastSection
+        titleTag={TitleTag.Header2}
+        title={localizer.localeMap.page.properties}>
         {props.page && props.page.properties.map(property => (
           <CastProperty
             key={property.key}
             propertyKey={property.key}
             value={property.value} />
         ))}
-        {props.page && 
-          <CastSection
-            titleTag={TitleTag.Header2}
-            title={localizer.localeMap.page.details}>
-            {/* @TODO: PageDetailSection.CastAccordian.ExpansionPanel requires 
-              an element with the class of 'root' surrounding it to display properly. */}
-            <div className='root'>
-              {props.page.details.map(detail => (
-                <PageDetailSection key={detail.id} detail={detail} />
-              ))}
-            </div>
-          </CastSection>
-        }
-      </CastPageContent>
+      </CastSection>
+      <CastSection
+        titleTag={TitleTag.Header2}
+        title={localizer.localeMap.page.details}>
+        {/* @TODO: PageDetailSection.CastAccordian.ExpansionPanel requires 
+          an element with the class of 'root' surrounding it to display properly. */}
+        <div className='root'>
+          {props.page && props.page.details.map(detail => (
+            <PageDetailSection key={detail.id} detail={detail} />
+          ))}
+        </div>
+      </CastSection>
     </CastPage>
   );
 }

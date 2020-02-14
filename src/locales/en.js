@@ -7,8 +7,11 @@ export const localeEn = {
   },
   page: {
     details: 'Details',
+    properties: 'Properties',
     cancelSelection: 'Cancel Selection',
+    editSelection: 'Edit Selection',
     deleteSelection: 'Delete Selection',
+    jumpToSelection: 'Jump to Selection',
     viewPages: 'View Pages',
     createPage: 'Create Page'
   },

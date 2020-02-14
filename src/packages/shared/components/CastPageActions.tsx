@@ -3,7 +3,7 @@ import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
-import EditIcon from '@material-ui/icons/Edit';
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import DetailsIcon from '@material-ui/icons/Details';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -48,9 +48,8 @@ const CastPageActions = (props: CastPageActionsProps):ReactElement => {
     <SpeedDial
       className={classes.speedDial}
       ariaLabel="SpeedDial openIcon CastPageActions"
-      icon={<SpeedDialIcon icon={<DetailsIcon />} openIcon={<EditIcon />} />}
+      icon={<SpeedDialIcon icon={<DetailsIcon />} openIcon={<CloseOutlinedIcon />}/>}
       onClose={() => handleClose()}
-      onClick={() => handleClose(props.defaultActionKey)}
       onOpen={handleOpen}
       open={open}
       hidden={props.hidden}

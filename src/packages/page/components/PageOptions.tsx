@@ -1,8 +1,10 @@
 import React, { ReactElement } from 'react';
 import CastPageActions from '../../shared/components/CastPageActions';
 import DeleteIcon from '@material-ui/icons/Delete';
-import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
+import EditIcon from '@material-ui/icons/Edit';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import localizer from '../../../utils/Localizer';
+import logger from '../../../utils/Logger';
 
 export enum SelectedPagePartType {
   Overview = 'overview',
@@ -23,7 +25,8 @@ export interface PageOptionsProps {
 interface PageOptionsState {}
 
 const actions = [
-  { icon: <CloseOutlinedIcon />, tooltip: localizer.localeMap.page.cancelSelection, key: '!!cancel' },
+  { icon: <EditIcon />, tooltip: localizer.localeMap.page.editSelection, key: '!!edit' },
+  { icon: <VisibilityIcon />, tooltip: localizer.localeMap.page.jumpToSelection, key: '!!jumpTo' },
   { icon: <DeleteIcon />, tooltip: localizer.localeMap.page.deleteSelection, key: '!!delete' },
 ];
 
@@ -41,6 +44,16 @@ class PageOptions extends React.Component<PageOptionsProps, PageOptionsState> {
       this.props.onCancelSelection();
     } else if (actionKey === '!!edit' && this.props.onEditPagePart) {
       this.props.onEditPagePart();
+    } else if (actionKey === '!!jumpTo') {
+      const id = 'test';
+      const el = document.getElementById(id)
+      if (!el) {
+        logger.logError(new Error(`element at ${id} is not defined`));
+        return;
+      }
+      el.scrollIntoView({
+        behavior: 'smooth'
+      });
     }
   }
 

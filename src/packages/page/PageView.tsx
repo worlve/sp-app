@@ -61,6 +61,7 @@ class PageView extends React.Component<PageViewProps, PageState> {
   }
 
   private handleEditPagePart = () => {
+    debugger;
     this.setState({
       selectedPagePart: undefined
     });
@@ -78,7 +79,8 @@ class PageView extends React.Component<PageViewProps, PageState> {
         <PageHeader page={this.state.page}></PageHeader>
         <PageMain
           page={this.state.page}
-          onClickPageOverview={this.handleClickPageOverview}></PageMain>
+          onClickPageOverview={this.handleClickPageOverview}
+          pageOverviewSelected={this.state.selectedPagePart && this.state.selectedPagePart.type === SelectedPagePartType.Overview}></PageMain>
         <PageOptions
           selectedPagePart={this.state.selectedPagePart}
           onDeletePagePart={this.handleDeletePagePart}
