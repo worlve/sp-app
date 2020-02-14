@@ -31,9 +31,13 @@ const PageMain = (props: PageMainProps):ReactElement => {
           <CastSection
             titleTag={TitleTag.Header2}
             title='!!Details'>
-            {props.page.details.map(detail => (
-              <PageDetailSection key={detail.id} detail={detail} />
-            ))}
+            {/* @TODO: PageDetailSection.CastAccordian.ExpansionPanel requires 
+              an element with the class of 'root' surrounding it to display properly. */}
+            <div className='root'>
+              {props.page.details.map(detail => (
+                <PageDetailSection key={detail.id} detail={detail} />
+              ))}
+            </div>
           </CastSection>
         }
       </CastPageContent>

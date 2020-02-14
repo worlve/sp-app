@@ -27,6 +27,17 @@ export function fullPage():Page {
     ],
     details: [
       {
+        id: 'DT_123456789013',
+        title: 'Kelenridge',
+        summary: 'Retreat from all harm',
+        partitions: [
+          {
+            type: 'h1',
+            value: 'This is an h1 header'
+          }
+        ]
+      },
+      {
         id: 'DT_123456789012',
         title: 'The Bannerfold Barracks',
         summary: 'Belgon leads the barrack guards as the captain over the defense of the city and its kingdom.',

@@ -1,7 +1,6 @@
 import React, { ReactElement } from 'react';
-import CastPageContent from '../../shared/components/CastPageContent';
+import CastAccordion from '../../shared/components/CastAccordion';
 import { PageDetail } from '../entities/PageDetail';
-import { TitleTag } from '../../shared/entities/TitleTag';
 import CastPartition from '../../shared/components/CastPartition';
 
 export interface PageDetailSectionProps {
@@ -10,8 +9,7 @@ export interface PageDetailSectionProps {
 
 const PageDetailSection = (props: PageDetailSectionProps):ReactElement => {
   return (
-    <CastPageContent
-      titleTag={TitleTag.Header3}
+    <CastAccordion
       title={props.detail.title}
       summary={props.detail.summary}>
       {props.detail && props.detail.partitions.map((partition, index) => (
@@ -19,7 +17,7 @@ const PageDetailSection = (props: PageDetailSectionProps):ReactElement => {
           key={index}
           partition={partition} />
       ))}
-    </CastPageContent>
+    </CastAccordion>
   );
 }
 
