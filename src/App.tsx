@@ -7,6 +7,8 @@ import logger, { LogLevel } from './utils/Logger';
 import httpHandler from './utils/HttpHandler';
 import { LOCALE_NAME_ENGLISH, localeEn } from './locales/en.js';
 import pageMockInterface from './packages/page/services/PageMockInterface';
+import { ThemeProvider } from '@material-ui/core';
+import { castTheme } from './packages/shared/styles/castTheme';
 // import pageHttpInterface from './packages/page/services/PageHttpInterface';
 
 logger.logLevel = LogLevel.Debug;
@@ -24,18 +26,20 @@ const Home = lazy(() => import('./routes/HomeRoute'));
 
 const App = ():ReactElement => {
   return (
-    <Router>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Switch>
-          <Route exact path="/pages/:pageId" component={Page}/>
-          <Route exact path="/pages" component={Pages}/>
-          <Route exact path="/" component={Home}/>
-          <Route path="*">
-            <Redirect to="/"></Redirect>
-          </Route>
-        </Switch>
-      </Suspense>
-    </Router>
+    <ThemeProvider theme={castTheme}>
+      <Router>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Switch>
+            <Route exact path="/pages/:pageId" component={Page}/>
+            <Route exact path="/pages" component={Pages}/>
+            <Route exact path="/" component={Home}/>
+            <Route path="*">
+              <Redirect to="/"></Redirect>
+            </Route>
+          </Switch>
+        </Suspense>
+      </Router>
+    </ThemeProvider>
   );
 }
 

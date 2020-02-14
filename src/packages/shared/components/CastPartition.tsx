@@ -1,7 +1,8 @@
 import React, { FunctionComponent, ReactElement } from 'react';
 import { PageDetailPartition, PageDetailPartitionType, PageDetailPartitionLink, PageDetailPartitionRelation, PageDetailPartitionImage, PageDetailPartitionColor, PageDetailPartitionUnorderedList, PageDetailPartitionOrderedList } from '../../page/entities/PageDetailPartition';
-import { Typography, Link, Divider, makeStyles, Box } from '@material-ui/core';
+import { Typography, Link, Divider, makeStyles, Box, ThemeProvider } from '@material-ui/core';
 import CastQuoteblock from './CastQuoteblock';
+import { castPartitionTheme } from '../styles/castTheme';
 
 export interface CastPartitionProps {
   partition: PageDetailPartition;
@@ -45,17 +46,17 @@ const CastPartition: FunctionComponent<CastPartitionProps> = (props):ReactElemen
   const renderPartition = ():ReactElement => {
     switch(props.partition.type) {
       case PageDetailPartitionType.Header1:
-        return <Typography variant='h1' gutterBottom>{props.partition.value}</Typography>
+        return <Typography variant='h1' component='h4' gutterBottom>{props.partition.value}</Typography>
       case PageDetailPartitionType.Header2:
-        return <Typography variant='h2' gutterBottom>{props.partition.value}</Typography>
+        return <Typography variant='h2' component='h4' gutterBottom>{props.partition.value}</Typography>
       case PageDetailPartitionType.Header3:
-        return <Typography variant='h3' gutterBottom>{props.partition.value}</Typography>
+        return <Typography variant='h3' component='h4' gutterBottom>{props.partition.value}</Typography>
       case PageDetailPartitionType.Header4:
-        return <Typography variant='h4' gutterBottom>{props.partition.value}</Typography>
+        return <Typography variant='h4' component='h4' gutterBottom>{props.partition.value}</Typography>
       case PageDetailPartitionType.Header5:
-        return <Typography variant='h5' gutterBottom>{props.partition.value}</Typography>
+        return <Typography variant='h5' component='h4' gutterBottom>{props.partition.value}</Typography>
       case PageDetailPartitionType.Header6:
-        return <Typography variant='h6' gutterBottom>{props.partition.value}</Typography>
+        return <Typography variant='h6' component='h4' gutterBottom>{props.partition.value}</Typography>
       case PageDetailPartitionType.Paragraph:
         if (props.partition.hasValue) {
           return <Typography gutterBottom>{props.partition.value}</Typography>
@@ -66,7 +67,7 @@ const CastPartition: FunctionComponent<CastPartitionProps> = (props):ReactElemen
         throw unexpectedPartitionProperties();
       case PageDetailPartitionType.Text:
         if (props.partition.hasValue) {
-          return <span>props.partition.value</span>;
+          return <span>{props.partition.value}</span>;
         }
         if (props.partition.hasPartitions) {
           return renderPartitions();
@@ -154,9 +155,9 @@ const CastPartition: FunctionComponent<CastPartitionProps> = (props):ReactElemen
   }
 
   return (
-    <React.Fragment>
+    <ThemeProvider theme={castPartitionTheme}>
       {renderPartition()}
-    </React.Fragment>
+    </ThemeProvider>
   );
 }
 

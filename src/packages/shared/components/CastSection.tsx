@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   sectionTitle: {
     'margin-top': 10,
     'text-transform': 'uppercase',
-    'color': grey[300],
+    'color': grey[500],
   }
 });
 
