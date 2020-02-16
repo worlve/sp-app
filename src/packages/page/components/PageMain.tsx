@@ -6,32 +6,63 @@ import PageDetailSection from './PageDetailSection';
 import CastPage from '../../shared/components/CastPage';
 import { TitleTag } from '../../shared/entities/TitleTag';
 import CastSection from '../../shared/components/CastSection';
+import CastHighlightWrapper from '../../shared/components/CastHighlightWrapper';
 import localizer from '../../../utils/Localizer';
+import { SelectedPagePart, SelectedPagePartType } from './PageOptions';
 
 export interface PageMainProps {
   page?: Page;
+  selectedPagePart?: SelectedPagePart;
   onClickPageOverview?: () => void;
-  pageOverviewSelected?: boolean;
+  onClickProperties?: () => void;
+  onClickDetail?: (detailId: string) => void;
+}
+
+export enum PagePartElementId {
+  PageOverview = 'pageOverview',
+  Properties = 'pageProperties',
 }
 
 const PageMain = (props: PageMainProps):ReactElement => {
+  const selectedPagePartType = ():SelectedPagePartType => {
+    if (!props.selectedPagePart) {
+      return SelectedPagePartType.Undefined;
+    }
+    return props.selectedPagePart.type;
+  }
+
+  const handleOnClickDetail = (detailId: string):void => {
+    if (!props.onClickDetail) {
+      return;
+    }
+    props.onClickDetail(detailId);
+  }
+
   return (
     <CastPage>
-      <CastPageOverview
-        titleTag={TitleTag.Header1}
-        title={props.page ? props.page.title : undefined}
-        summary={props.page ? props.page.summary : undefined}
+      <CastHighlightWrapper
         onClick={props.onClickPageOverview}
-        highlight={props.pageOverviewSelected} />
+        highlight={selectedPagePartType() === SelectedPagePartType.Overview}
+        anchorId={PagePartElementId.PageOverview}>
+        <CastPageOverview
+          titleTag={TitleTag.Header1}
+          title={props.page ? props.page.title : undefined}
+          summary={props.page ? props.page.summary : undefined} />
+      </CastHighlightWrapper>
       <CastSection
         titleTag={TitleTag.Header2}
         title={localizer.localeMap.page.properties}>
-        {props.page && props.page.properties.map(property => (
-          <CastProperty
-            key={property.key}
-            propertyKey={property.key}
-            value={property.value} />
-        ))}
+        <CastHighlightWrapper
+          onClick={props.onClickProperties}
+          highlight={selectedPagePartType() === SelectedPagePartType.Properties}
+          anchorId={PagePartElementId.Properties}>
+          {props.page && props.page.properties.map(property => (
+            <CastProperty
+              key={property.key}
+              propertyKey={property.key}
+              value={property.value} />
+          ))}
+        </CastHighlightWrapper>
       </CastSection>
       <CastSection
         titleTag={TitleTag.Header2}
@@ -40,7 +71,11 @@ const PageMain = (props: PageMainProps):ReactElement => {
           an element with the class of 'root' surrounding it to display properly. */}
         <div className='root'>
           {props.page && props.page.details.map(detail => (
-            <PageDetailSection key={detail.id} detail={detail} />
+            <PageDetailSection
+              key={detail.id}
+              detail={detail}
+              onClickDetail={() => handleOnClickDetail(detail.id)}
+              highlight={props.selectedPagePart && props.selectedPagePart.id === detail.id} />
           ))}
         </div>
       </CastSection>

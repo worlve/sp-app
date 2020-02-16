@@ -10,13 +10,13 @@ export interface CastPartitionProps {
 
 const useStyles = makeStyles({
   divider: {
-    'margin-top': 20,
-    'margin-bottom': 20,
+    marginTop: 20,
+    marginBottom: 20,
   },
   center: {
-    'width': '100%',
-    'margin': '0 auto',
-    'text-align': 'center',
+    width: '100%',
+    margin: '0 auto',
+    textAlign: 'center',
   },
 });
 

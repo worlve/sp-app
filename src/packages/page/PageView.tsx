@@ -4,7 +4,7 @@ import { Page } from './entities/Page';
 import pageService from './services/PageService';
 import logger from '../../utils/Logger';
 import PageHeader from './components/PageHeader';
-import PageMain from './components/PageMain';
+import PageMain, { PagePartElementId } from './components/PageMain';
 import PageOptions, { SelectedPagePartType, SelectedPagePart } from './components/PageOptions';
 
 export interface PageViewProps { 
@@ -50,6 +50,26 @@ class PageView extends React.Component<PageViewProps, PageState> {
     this.setState({
       selectedPagePart: {
         type: SelectedPagePartType.Overview,
+        elementId: PagePartElementId.PageOverview,
+      },
+    });
+  }
+
+  private handleClickProperties = () => {
+    this.setState({
+      selectedPagePart: {
+        type: SelectedPagePartType.Properties,
+        elementId: PagePartElementId.Properties,
+      },
+    });
+  }
+
+  private handleClickDetail = (detailId: string) => {
+    this.setState({
+      selectedPagePart: {
+        type: SelectedPagePartType.Detail,
+        elementId: detailId,
+        id: detailId,
       },
     });
   }
@@ -80,7 +100,9 @@ class PageView extends React.Component<PageViewProps, PageState> {
         <PageMain
           page={this.state.page}
           onClickPageOverview={this.handleClickPageOverview}
-          pageOverviewSelected={this.state.selectedPagePart && this.state.selectedPagePart.type === SelectedPagePartType.Overview}></PageMain>
+          onClickProperties={this.handleClickProperties}
+          onClickDetail={this.handleClickDetail}
+          selectedPagePart={this.state.selectedPagePart}></PageMain>
         <PageOptions
           selectedPagePart={this.state.selectedPagePart}
           onDeletePagePart={this.handleDeletePagePart}

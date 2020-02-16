@@ -15,9 +15,9 @@ export enum CastQuoteblockVariant {
 
 const useStyles = makeStyles({
   quoteblock: {
-    'border-left': `3px solid ${grey[900]}`,
-    'background-color': grey[50],
-    'padding': 10
+    borderLeft: `3px solid ${grey[900]}`,
+    backgroundColor: grey[50],
+    padding: 10
   },
 });
 
