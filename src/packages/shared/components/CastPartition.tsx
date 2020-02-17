@@ -18,6 +18,9 @@ const useStyles = makeStyles({
     margin: '0 auto',
     textAlign: 'center',
   },
+  fitInsideParent: {
+    width: '100%',
+  },
 });
 
 const CastPartition: FunctionComponent<CastPartitionProps> = (props):ReactElement => {
@@ -133,7 +136,7 @@ const CastPartition: FunctionComponent<CastPartitionProps> = (props):ReactElemen
         }
         return (
           <Box className={classes.center}>
-            <img src={props.partition.link} alt={props.partition.altText}/>
+            <img className={classes.fitInsideParent} src={props.partition.link} alt={props.partition.altText}/>
             <Typography variant="caption" display="block" gutterBottom>{props.partition.altText}</Typography>
           </Box>
         );

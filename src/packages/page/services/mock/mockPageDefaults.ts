@@ -11,7 +11,7 @@ export function getDefaultPages():Page[] {
 export function fullPage():Page {
   const page = {
     id: 'PG_1',
-    title: 'Talendor',
+    title: 'Flight of the Talendor',
     summary: 'Long ago, the Talendorians lived together in harmony. Then, everything changed when the Fire Plane attacked.',
     properties: [
       {

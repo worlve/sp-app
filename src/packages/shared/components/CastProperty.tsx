@@ -16,6 +16,7 @@ const useStyles = makeStyles({
     textTransform: 'uppercase',
     color: grey[600],
     fontWeight: 700,
+    whiteSpace: 'nowrap',
   },
   propertyValue: {
     marginLeft: 10,

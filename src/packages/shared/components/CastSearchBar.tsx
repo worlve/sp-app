@@ -6,6 +6,8 @@ import IconButton from '@material-ui/core/IconButton';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import SearchIcon from '@material-ui/icons/Search';
 import localizer from '../../../utils/Localizer';
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 export interface CastSearchBarProps {
   title?: string;
@@ -27,21 +29,33 @@ const useStyles = makeStyles(theme => ({
 
 const CastSearchBar = (props: CastSearchBarProps):ReactElement => {
   const classes = useStyles();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('xs'));
 
   return (
-    <Paper component="form" className={classes.root}>
-      <IconButton type="submit" aria-label="search">
-        <SearchIcon />
-      </IconButton>
-      <InputBase
-        className={classes.input}
-        placeholder={localizer.localeMap.default.search}
-        inputProps={{ 'aria-label': 'search' }}
-      />
-      <IconButton aria-label="search options">
-        <ArrowDropDownIcon />
-      </IconButton>
-    </Paper>
+    <React.Fragment>
+      {isSmallScreen && 
+        <IconButton color="inherit" aria-label="search">
+          <SearchIcon />
+        </IconButton>
+      }
+      {!isSmallScreen && 
+        <Paper component="form" className={classes.root}>
+          <IconButton type="submit" aria-label="search">
+            <SearchIcon />
+          </IconButton>
+          <InputBase
+            className={classes.input}
+            placeholder={localizer.localeMap.default.search}
+            inputProps={{ 'aria-label': 'search' }}
+          />
+          <IconButton aria-label="search options">
+            <ArrowDropDownIcon />
+          </IconButton>
+        </Paper>
+      }
+    </React.Fragment>
+    
   );
 }
 
