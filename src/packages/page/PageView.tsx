@@ -173,7 +173,8 @@ class PageView extends React.Component<PageViewProps, PageState> {
           onClickPageOverview={this.handleClickPageOverview}
           onClickProperties={this.handleClickProperties}
           onClickDetail={this.handleClickDetail}
-          selectedPagePart={this.state.selectedPagePart}></PageMain>
+          selectedPagePart={this.state.selectedPagePart}
+          onClickAwaySelectedPagePart={this.handleCancelSelection}></PageMain>
         <PageOptions
           selectedPagePart={this.state.selectedPagePart}
           onDeletePagePart={this.handleDeletePagePart}

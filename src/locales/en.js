@@ -13,12 +13,15 @@ export const localeEn = {
     deleteSelection: 'Delete Selection (D)',
     jumpToSelection: 'Focus Selection (F)',
     viewPages: 'View Pages',
-    createPage: 'Create Page ⇧⌘+N'
+    createPage: 'Create Page (⇧⌘N)',
+    selectionOptions: 'Options...'
   },
   default: {
-    search: 'Search ⇧⌘+Space',
+    search: 'Search',
     home: 'Back to Home',
-    save: 'Save ⇧⌘+S',
+    save: 'Save',
+    saveHotKeys: 'Save (⇧⌘S)',
     cancel: 'Cancel',
+    cancelHotKeys: 'Cancel (Esc)',
   },
 };

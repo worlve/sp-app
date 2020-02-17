@@ -6,6 +6,7 @@ import CastPartition from '../../shared/components/CastPartition';
 export interface PageDetailSectionProps {
   detail: PageDetail;
   onClickDetail?: () => void;
+  onClickAwayDetail?: () => void;
   highlight?: boolean;
 }
 
@@ -16,7 +17,8 @@ const PageDetailSection = (props: PageDetailSectionProps):ReactElement => {
       title={props.detail.title}
       summary={props.detail.summary}
       onClick={props.onClickDetail}
-      highlight={props.highlight}>
+      highlight={props.highlight}
+      onCollapse={props.onClickAwayDetail}>
       {props.detail && props.detail.partitions.map((partition, index) => (
         <CastPartition
           key={index}

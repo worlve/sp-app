@@ -16,6 +16,7 @@ export interface PageMainProps {
   onClickPageOverview?: () => void;
   onClickProperties?: () => void;
   onClickDetail?: (detailId: string) => void;
+  onClickAwaySelectedPagePart?: () => void;
 }
 
 export enum PagePartElementId {
@@ -81,6 +82,7 @@ const PageMain = (props: PageMainProps):ReactElement => {
               key={detail.id}
               detail={detail}
               onClickDetail={() => handleOnClickDetail(detail.id)}
+              onClickAwayDetail={props.onClickAwaySelectedPagePart}
               highlight={props.selectedPagePart && props.selectedPagePart.id === detail.id} />
           ))}
         </div>

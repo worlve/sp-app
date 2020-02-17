@@ -7,12 +7,12 @@ export interface CastAccordionProps {
   title?: string;
   summary?: string;
   onClick?: () => void;
+  onCollapse?: () => void;
   highlight?: boolean;
   elementId?: string;
 }
 
 const SELECTION_BORDER_SIZE = 8;
-const DEFAULT_BORDER_SIZE = 24;
 
 const useStyles = makeStyles((theme: Theme) =>
 createStyles({
@@ -28,38 +28,44 @@ createStyles({
     borderLeftColor: theme.palette.secondary.main,
   },
   hoverableSection: {
-    transition: 'all .1s',
-    transitionTimingFunction: 'ease-out',
-    borderLeftWidth: 0,
+    transition: 'border-color .4s',
     borderLeftStyle: 'solid',
-    borderLeftColor: theme.palette.secondary.light,
-    paddingLeft: DEFAULT_BORDER_SIZE + SELECTION_BORDER_SIZE,
+    borderLeftColor: '#FFF',
+    borderLeftWidth: 0,
+    paddingLeft: SELECTION_BORDER_SIZE,
     '&:hover': {
+      borderLeftColor: theme.palette.secondary.light,
       borderLeftWidth: SELECTION_BORDER_SIZE,
-      paddingLeft: DEFAULT_BORDER_SIZE,
+      paddingLeft: 0,
     }
   }
 }));
 
 const CastAccordion: FunctionComponent<CastAccordionProps> = (props):ReactElement => {
   const classes = useStyles();
-  const [expanded, setExpanded] = React.useState(false);
 
   const handleChange = () => {
-    setExpanded(!expanded);
+    if (props.highlight) {
+      // @NOTE: the onClick event fires after onChange, so it undoes the collapse.
+      // So we wait for the cycle to resolve the full event queue.
+      setTimeout(() => {
+        if (props.onCollapse) {
+          return props.onCollapse();
+        }
+      }, 0);
+    }
   };
 
   return (
     <ExpansionPanel
       id={props.elementId}
-      className={props.highlight ? classes.selectedSection : ''}
-      expanded={expanded}
+      className={props.highlight ? classes.selectedSection : classes.hoverableSection}
+      expanded={!!props.highlight}
       onChange={handleChange}
       onClick={props.onClick}>
       { /* the reason the highlight is only on the summary is that the highlight animation stutters and lags
-           when the panel details contains images */ }
+          when the panel details contains images */ }
       <ExpansionPanelSummary
-        className={props.highlight ? '' : classes.hoverableSection}
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1bh-content"
         id="panel1bh-content"
@@ -69,8 +75,8 @@ const CastAccordion: FunctionComponent<CastAccordionProps> = (props):ReactElemen
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>
       { /* the reason we do this is that anything complex inside the expansion, 
-           such as images, causes significant lag during transitions */ }
-      { expanded && 
+          such as images, causes significant lag during transitions */ }
+      { !!props.highlight && 
         <div>
           {props.children}
         </div>

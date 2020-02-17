@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined';
 import DoneIcon from '@material-ui/icons/Done';
-import { Fab } from '@material-ui/core';
+import { Fab, Tooltip } from '@material-ui/core';
 import localizer from '../../../utils/Localizer';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -33,22 +33,26 @@ const CastSaveOrCancelActions = (props: CastSaveOrCancelActionsProps):ReactEleme
 
   return (
     <div className={classes.fabBox}>
-      <Fab
-        color="primary"
-        size="medium"
-        aria-label="cancel"
-        onClick={props.onCancel}>
-        <CloseOutlinedIcon />
-      </Fab>
-      <Fab
-        variant="extended"
-        color="secondary"
-        aria-label="save"
-        onClick={props.onSave}
-        className={classes.notLeftmostFab}>
-        <DoneIcon className={classes.extendedIcon} />
-        {localizer.localeMap.default.save}
-      </Fab>
+      <Tooltip title={localizer.localeMap.default.cancelHotKeys} placement="top">
+        <Fab
+          color="primary"
+          size="medium"
+          aria-label="cancel"
+          onClick={props.onCancel}>
+          <CloseOutlinedIcon />
+        </Fab>
+      </Tooltip>
+      <Tooltip title={localizer.localeMap.default.saveHotKeys} placement="top">
+        <Fab
+          variant="extended"
+          color="secondary"
+          aria-label="save"
+          onClick={props.onSave}
+          className={classes.notLeftmostFab}>
+          <DoneIcon className={classes.extendedIcon} />
+          {localizer.localeMap.default.save}
+        </Fab>
+      </Tooltip>
     </div>
   );
 }
