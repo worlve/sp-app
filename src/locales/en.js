@@ -13,8 +13,8 @@ export const localeEn = {
     deleteSelection: 'Delete Selection (D)',
     jumpToSelection: 'Focus Selection (F)',
     viewPages: 'View Pages',
-    createPage: 'Create Page (⇧⌘N)',
-    selectionOptions: 'Options...'
+    createPage: 'Create Page',
+    createPageSecondary: '⇧⌘N'
   },
   default: {
     search: 'Search',

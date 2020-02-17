@@ -60,7 +60,7 @@ const CastDrawer = (props: CastDrawerProps):ReactElement => {
           </ListItem>
           <ListItem button key={'createPage'}>
             <ListItemIcon><PostAddIcon /></ListItemIcon>
-            <ListItemText primary={localizer.localeMap.page.createPage} />
+            <ListItemText primary={localizer.localeMap.page.createPage} secondary={localizer.localeMap.page.createPageSecondary} />
           </ListItem>
         </List>
       </div>
