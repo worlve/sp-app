@@ -5,6 +5,7 @@ import { hoverableSelection } from '../styles/castTheme';
 export interface CastHighlightWrapperProps {
   onClick?: () => void;
   highlight?: boolean;
+  disableHover?: boolean;
   anchorId?: string;
 }
 
@@ -23,10 +24,14 @@ const CastHighlightWrapper: FunctionComponent<CastHighlightWrapperProps> = (prop
   const hoverableClasses = hoverableSelection();
   const classes = useStyles();
 
+  const disabledClick = () => {};
+
   return (
     <React.Fragment>
       <div id={props.anchorId} className={classes.anchorBuffer}></div>
-      <Box onClick={props.onClick} className={props.highlight ? hoverableClasses.selectedSection : hoverableClasses.hoverableSection}>
+      <Box
+        onClick={props.disableHover ? disabledClick : props.onClick }
+        className={props.highlight ? hoverableClasses.selectedSection : props.disableHover ? '' : hoverableClasses.hoverableSection}>
         {props.children}
       </Box>
     </React.Fragment>

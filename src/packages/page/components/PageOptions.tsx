@@ -4,7 +4,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import localizer from '../../../utils/Localizer';
-import logger from '../../../utils/Logger';
+import { PagePartElementId } from './PageMain';
+import CastSaveOrCancelActions from '../../shared/components/CastSaveOrCancelActions';
 
 export enum SelectedPagePartType {
   Overview = 'overview',
@@ -17,13 +18,18 @@ export interface SelectedPagePart {
   type: SelectedPagePartType;
   elementId: string;
   id?: string;
+  editing?: boolean;
+  deleting?: boolean;
 }
 
 export interface PageOptionsProps {
   selectedPagePart?: SelectedPagePart;
   onDeletePagePart?: () => void;
   onEditPagePart?: () => void;
+  onJumpToPagePart?: () => void;
   onCancelSelection?: () => void;
+  onSelectionEditSave?: () => void;
+  onSelectionEditCancel?: () => void;
 }
 
 interface PageOptionsState {}
@@ -52,7 +58,7 @@ class PageOptions extends React.Component<PageOptionsProps, PageOptionsState> {
     if (!this.props.selectedPagePart) {
       return {
         type: SelectedPagePartType.Undefined,
-        elementId: '',
+        elementId: PagePartElementId.Undefined,
       };
     }
     return this.props.selectedPagePart;
@@ -65,27 +71,26 @@ class PageOptions extends React.Component<PageOptionsProps, PageOptionsState> {
       this.props.onCancelSelection();
     } else if (actionKey === ActionKey.Edit && this.props.onEditPagePart) {
       this.props.onEditPagePart();
-    } else if (actionKey === ActionKey.JumpTo) {
-      const id = this.selectedPagePart.elementId;
-      const el = document.getElementById(id)
-      if (!el) {
-        logger.logError(new Error(`element at ${id} is not defined`));
-        return;
-      }
-      el.scrollIntoView({
-        behavior: 'smooth'
-      });
+    } else if (actionKey === ActionKey.JumpTo && this.props.onJumpToPagePart) {
+      this.props.onJumpToPagePart();
     }
   }
 
   render():ReactElement {
     return (
       <div className="PageOptions">
-        <CastPageActions
-          hidden={!this.props.selectedPagePart}
-          actions={actions}
-          defaultActionKey={ActionKey.Edit}
-          onActionSelect={this.handleOnActionSelect}></CastPageActions>
+        {!this.selectedPagePart.editing && 
+          <CastPageActions
+            hidden={!this.props.selectedPagePart}
+            actions={actions}
+            defaultActionKey={ActionKey.Edit}
+            onActionSelect={this.handleOnActionSelect}></CastPageActions>
+        }
+        { this.selectedPagePart.editing &&
+          <CastSaveOrCancelActions
+            onSave={this.props.onSelectionEditSave}
+            onCancel={this.props.onSelectionEditCancel}></CastSaveOrCancelActions>
+        }
       </div>
     );
   }

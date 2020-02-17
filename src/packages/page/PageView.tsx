@@ -6,6 +6,7 @@ import logger from '../../utils/Logger';
 import PageHeader from './components/PageHeader';
 import PageMain, { PagePartElementId } from './components/PageMain';
 import PageOptions, { SelectedPagePartType, SelectedPagePart } from './components/PageOptions';
+import hotKeyListener, { keyCodeMap } from '../../utils/HotKeyListener';
 
 export interface PageViewProps { 
   pageId: string; 
@@ -17,15 +18,47 @@ interface PageState {
 }
 
 class PageView extends React.Component<PageViewProps, PageState> {
+  private hotKeyCallbackNumbers: number[];
+
   constructor(props: PageViewProps) {
     super(props);
     this.state = {};
+    this.hotKeyCallbackNumbers = [];
   }
 
   componentDidMount() {
+    this.hotKeyCallbackNumbers.push(
+      hotKeyListener.registerCallback(
+        new Set([keyCodeMap.ESC]), 
+        this.handleCancelSelection,
+      )
+    );
+    this.hotKeyCallbackNumbers.push(
+      hotKeyListener.registerCallback(
+        new Set([keyCodeMap.E]), 
+        this.handleEditPagePart,
+      )
+    );
+    this.hotKeyCallbackNumbers.push(
+      hotKeyListener.registerCallback(
+        new Set([keyCodeMap.SHIFT, keyCodeMap.COMMAND, keyCodeMap.S]), 
+        this.handleSaveEditPagePart,
+      )
+    );
+    this.hotKeyCallbackNumbers.push(
+      hotKeyListener.registerCallback(
+        new Set([keyCodeMap.F]), 
+        this.handleJumpToPagePart,
+      )
+    );
     const callback = PageView.setDocumentTitle;
-
     this.setPage(callback);
+  }
+
+  componentWillUnmount() {
+    for (const callbackNumber of this.hotKeyCallbackNumbers) {
+      hotKeyListener.unregisterCallback(callbackNumber);
+    }
   }
 
   private async setPage(callback?: (page: Page) => void) {
@@ -76,11 +109,39 @@ class PageView extends React.Component<PageViewProps, PageState> {
 
   private handleDeletePagePart = () => {
     this.setState({
-      selectedPagePart: undefined
+      selectedPagePart: {
+        ...this.selectedPagePart,
+        deleting: true,
+      }
     });
   }
 
   private handleEditPagePart = () => {
+    if (!this.state.selectedPagePart) {
+      logger.logInfo('handleEditPagePart called without selected page part.  Likely due to hotkey event');
+      return;
+    }
+    this.setState({
+      selectedPagePart: {
+        ...this.selectedPagePart,
+        editing: true,
+      }
+    });
+  }
+
+  private handleJumpToPagePart = () => {
+    const id = this.selectedPagePart.elementId;
+    const el = document.getElementById(id);
+    if (!el) {
+      logger.logError(new Error(`element at ${id} is not defined`));
+      return;
+    }
+    el.scrollIntoView({
+      behavior: 'smooth'
+    });
+  }
+
+  private handleSaveEditPagePart = () => {
     debugger;
     this.setState({
       selectedPagePart: undefined
@@ -91,6 +152,16 @@ class PageView extends React.Component<PageViewProps, PageState> {
     this.setState({
       selectedPagePart: undefined
     });
+  }
+
+  get selectedPagePart():SelectedPagePart {
+    if (!this.state.selectedPagePart) {
+      return {
+        type: SelectedPagePartType.Undefined,
+        elementId: PagePartElementId.Undefined,
+      };
+    }
+    return this.state.selectedPagePart;
   }
 
   render():ReactElement {
@@ -107,7 +178,10 @@ class PageView extends React.Component<PageViewProps, PageState> {
           selectedPagePart={this.state.selectedPagePart}
           onDeletePagePart={this.handleDeletePagePart}
           onEditPagePart={this.handleEditPagePart}
-          onCancelSelection={this.handleCancelSelection}></PageOptions>
+          onJumpToPagePart={this.handleJumpToPagePart}
+          onCancelSelection={this.handleCancelSelection}
+          onSelectionEditCancel={this.handleCancelSelection}
+          onSelectionEditSave={this.handleSaveEditPagePart}></PageOptions>
       </div>
     );
   }

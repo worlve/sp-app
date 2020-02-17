@@ -21,14 +21,18 @@ export interface PageMainProps {
 export enum PagePartElementId {
   PageOverview = 'pageOverview',
   Properties = 'pageProperties',
+  Undefined = 'undefined',
 }
 
 const PageMain = (props: PageMainProps):ReactElement => {
-  const selectedPagePartType = ():SelectedPagePartType => {
+  const selectedPagePart = ():SelectedPagePart => {
     if (!props.selectedPagePart) {
-      return SelectedPagePartType.Undefined;
+      return {
+        type: SelectedPagePartType.Undefined,
+        elementId: PagePartElementId.Undefined,
+      };
     }
-    return props.selectedPagePart.type;
+    return props.selectedPagePart;
   }
 
   const handleOnClickDetail = (detailId: string):void => {
@@ -42,8 +46,9 @@ const PageMain = (props: PageMainProps):ReactElement => {
     <CastPage>
       <CastHighlightWrapper
         onClick={props.onClickPageOverview}
-        highlight={selectedPagePartType() === SelectedPagePartType.Overview}
-        anchorId={PagePartElementId.PageOverview}>
+        highlight={selectedPagePart().type === SelectedPagePartType.Overview}
+        anchorId={PagePartElementId.PageOverview}
+        disableHover={selectedPagePart().editing}>
         <CastPageOverview
           titleTag={TitleTag.Header1}
           title={props.page ? props.page.title : undefined}
@@ -54,8 +59,9 @@ const PageMain = (props: PageMainProps):ReactElement => {
         title={localizer.localeMap.page.properties}>
         <CastHighlightWrapper
           onClick={props.onClickProperties}
-          highlight={selectedPagePartType() === SelectedPagePartType.Properties}
-          anchorId={PagePartElementId.Properties}>
+          highlight={selectedPagePart().type === SelectedPagePartType.Properties}
+          anchorId={PagePartElementId.Properties}
+          disableHover={selectedPagePart().editing}>
           {props.page && props.page.properties.map(property => (
             <CastProperty
               key={property.key}

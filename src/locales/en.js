@@ -9,14 +9,16 @@ export const localeEn = {
     details: 'Details',
     properties: 'Properties',
     cancelSelection: 'Cancel Selection',
-    editSelection: 'Edit Selection',
-    deleteSelection: 'Delete Selection',
-    jumpToSelection: 'Jump to Selection',
+    editSelection: 'Edit Selection (E)',
+    deleteSelection: 'Delete Selection (D)',
+    jumpToSelection: 'Focus Selection (F)',
     viewPages: 'View Pages',
-    createPage: 'Create Page'
+    createPage: 'Create Page ⇧⌘+N'
   },
   default: {
-    search: 'Search',
-    home: 'Back to Home'
+    search: 'Search ⇧⌘+Space',
+    home: 'Back to Home',
+    save: 'Save ⇧⌘+S',
+    cancel: 'Cancel',
   },
 };

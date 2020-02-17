@@ -12,6 +12,7 @@ export interface CastAccordionProps {
 }
 
 const SELECTION_BORDER_SIZE = 8;
+const DEFAULT_BORDER_SIZE = 24;
 
 const useStyles = makeStyles((theme: Theme) =>
 createStyles({
@@ -25,7 +26,6 @@ createStyles({
     borderLeftWidth: SELECTION_BORDER_SIZE,
     borderLeftStyle: 'solid',
     borderLeftColor: theme.palette.secondary.main,
-    paddingLeft: 0,
   },
   hoverableSection: {
     transition: 'all .1s',
@@ -33,32 +33,12 @@ createStyles({
     borderLeftWidth: 0,
     borderLeftStyle: 'solid',
     borderLeftColor: theme.palette.secondary.light,
-    paddingLeft: SELECTION_BORDER_SIZE,
+    paddingLeft: DEFAULT_BORDER_SIZE + SELECTION_BORDER_SIZE,
     '&:hover': {
       borderLeftWidth: SELECTION_BORDER_SIZE,
-      paddingLeft: 0,
+      paddingLeft: DEFAULT_BORDER_SIZE,
     }
-  },
-  // selectedSection: {
-  //   boxShadow: `
-  //     0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12),
-  //     0 0 0 ${BORDER_SIZE}px ${theme.palette.secondary.main} inset
-  //   `,
-  // },
-  // hoverableSection: {
-  //   transition: 'all .1s',
-  //   transitionTimingFunction: 'ease-out',
-  //   boxShadow: `
-  //     0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12),
-  //     0 0 0 0 ${theme.palette.secondary.light} inset
-  //   `,
-  //   '&:hover': {
-  //     boxShadow: `
-  //       0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12),
-  //       0 0 0 ${BORDER_SIZE}px ${theme.palette.secondary.light} inset
-  //     `,
-  //   }
-  // },
+  }
 }));
 
 const CastAccordion: FunctionComponent<CastAccordionProps> = (props):ReactElement => {
@@ -72,11 +52,14 @@ const CastAccordion: FunctionComponent<CastAccordionProps> = (props):ReactElemen
   return (
     <ExpansionPanel
       id={props.elementId}
-      className={props.highlight ? classes.selectedSection : classes.hoverableSection}
+      className={props.highlight ? classes.selectedSection : ''}
       expanded={expanded}
       onChange={handleChange}
       onClick={props.onClick}>
+      { /* the reason the highlight is only on the summary is that the highlight animation stutters and lags
+           when the panel details contains images */ }
       <ExpansionPanelSummary
+        className={props.highlight ? '' : classes.hoverableSection}
         expandIcon={<ExpandMoreIcon />}
         aria-controls="panel1bh-content"
         id="panel1bh-content"
@@ -85,9 +68,13 @@ const CastAccordion: FunctionComponent<CastAccordionProps> = (props):ReactElemen
         <Typography className={classes.secondaryHeading} variant='subtitle1'>{props.summary}</Typography>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>
+      { /* the reason we do this is that anything complex inside the expansion, 
+           such as images, causes significant lag during transitions */ }
+      { expanded && 
         <div>
-        {props.children}
+          {props.children}
         </div>
+      }
       </ExpansionPanelDetails>
     </ExpansionPanel>
   );
