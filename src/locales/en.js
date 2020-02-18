@@ -14,7 +14,11 @@ export const localeEn = {
     jumpToSelection: 'Focus Selection (F)',
     viewPages: 'View Pages',
     createPage: 'Create Page',
-    createPageSecondary: '⇧⌘N'
+    createPageSecondary: '⇧⌘N',
+    edit: {
+      pageTitle: 'Page Title',
+      pageSummary: 'Page Summary',
+    },
   },
   default: {
     search: 'Search',

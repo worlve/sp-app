@@ -53,7 +53,8 @@ const PageMain = (props: PageMainProps):ReactElement => {
         <CastPageOverview
           titleTag={TitleTag.Header1}
           title={props.page ? props.page.title : undefined}
-          summary={props.page ? props.page.summary : undefined} />
+          summary={props.page ? props.page.summary : undefined}
+          editing={selectedPagePart().type === SelectedPagePartType.Overview && selectedPagePart().editing} />
       </CastHighlightWrapper>
       <CastSection
         titleTag={TitleTag.Header2}
