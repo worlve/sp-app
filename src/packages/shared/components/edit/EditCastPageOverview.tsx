@@ -5,15 +5,16 @@ import localizer from '../../../../utils/Localizer';
 export interface EditCastPageOverviewProps {
   title?: string;
   summary?: string;
+  onTitleChange?: (newTitle: string) => void;
+  onSummaryChange?: (newSummary: string) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    widthController: {
+    textFieldSpacing: {
       marginLeft: theme.spacing(1),
       marginRight: theme.spacing(1),
       marginTop: theme.spacing(3),
-      maxWidth: 400,
       '&:first-child': {
         marginTop: 0,
       },
@@ -28,15 +29,21 @@ const EditCastPageOverview: FunctionComponent<EditCastPageOverviewProps> = (prop
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitleValue(event.target.value);
+    if (props.onTitleChange) {
+      props.onTitleChange(event.target.value);
+    }
   };
 
   const handleSummaryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSummaryValue(event.target.value);
+    if (props.onSummaryChange) {
+      props.onSummaryChange(event.target.value);
+    }
   };
 
   return (
     <form noValidate autoComplete="off">
-      <div className={classes.widthController}>
+      <div className={classes.textFieldSpacing}>
         <TextField
           label={localizer.localeMap.page.edit.pageTitle}
           variant="outlined"
@@ -45,7 +52,7 @@ const EditCastPageOverview: FunctionComponent<EditCastPageOverviewProps> = (prop
           color="secondary"
           fullWidth />
       </div>
-      <div className={classes.widthController}>
+      <div className={classes.textFieldSpacing}>
         <TextField
           label={localizer.localeMap.page.edit.pageSummary}
           variant="outlined"

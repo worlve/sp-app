@@ -7,6 +7,7 @@ import PageHeader from './components/PageHeader';
 import PageMain, { PagePartElementId } from './components/PageMain';
 import PageOptions, { SelectedPagePartType, SelectedPagePart } from './components/PageOptions';
 import hotKeyListener, { keyCodeMap } from '../../utils/HotKeyListener';
+import { DraftPage } from './entities/DraftPage';
 
 export interface PageViewProps { 
   pageId: string; 
@@ -52,7 +53,7 @@ class PageView extends React.Component<PageViewProps, PageState> {
       )
     );
     const callback = PageView.setDocumentTitle;
-    this.setPage(callback);
+    this.fetchPage(callback);
   }
 
   componentWillUnmount() {
@@ -61,7 +62,7 @@ class PageView extends React.Component<PageViewProps, PageState> {
     }
   }
 
-  private async setPage(callback?: (page: Page) => void) {
+  private async fetchPage(callback?: (page: Page) => void) {
     try {
       const page = await pageService.fetchPage(this.props.pageId);
       if (callback) {
@@ -121,10 +122,25 @@ class PageView extends React.Component<PageViewProps, PageState> {
       logger.logInfo('handleEditPagePart called without selected page part.  Likely due to hotkey event');
       return;
     }
+    if (!this.state.page) {
+      logger.logError(new Error('edit called on a page that does not exist'));
+      return;
+    }
+    const draftPage:DraftPage = {};
+    switch (this.state.selectedPagePart.type) {
+      case SelectedPagePartType.Overview:
+        draftPage.title = this.state.page.title;
+        draftPage.summary = this.state.page.summary;
+        break;
+      default:
+        logger.logError(new Error(`unexpected edit on selected page part: ${this.state.selectedPagePart.type}`));
+        return;
+    }
     this.setState({
       selectedPagePart: {
         ...this.selectedPagePart,
         editing: true,
+        draftPage,
       }
     });
   }
@@ -142,15 +158,68 @@ class PageView extends React.Component<PageViewProps, PageState> {
   }
 
   private handleSaveEditPagePart = () => {
-    debugger;
+    if (!this.state.selectedPagePart || !this.state.selectedPagePart.draftPage) {
+      logger.logInfo('handleSaveEditPagePart called without selected page part');
+      return;
+    }
+    if (!this.state.page) {
+      logger.logError(new Error('edit called on a page that does not exist'));
+      return;
+    }
+    const page = this.state.page.copy();
+    switch (this.state.selectedPagePart.type) {
+      case SelectedPagePartType.Overview:
+        page.title = this.state.selectedPagePart.draftPage.title || '';
+        page.summary = this.state.selectedPagePart.draftPage.summary || '';
+        this.setPageOverview(page.title, page.summary);
+        break;
+      default:
+        logger.logError(new Error(`unexpected edit on selected page part: ${this.state.selectedPagePart.type}`));
+        return;
+    }
+    this.setState({
+      selectedPagePart: undefined,
+      page,
+    });
+  }
+
+  private async setPageOverview(title: string, summary: string) {
+    try {
+      await pageService.setPageOverview(this.props.pageId, title, summary);
+    } catch(err) {
+      logger.logError(err);
+    }
+  }
+
+
+  private handleCancelSelection = () => {
     this.setState({
       selectedPagePart: undefined
     });
   }
 
-  private handleCancelSelection = () => {
+  private handleOnEditPageOverviewChange = (newTitle?: string, newSummary?: string) => {
+    let changes = {};
+    if (newTitle !== undefined) {
+      changes = {
+        ...changes,
+        title: newTitle
+      };
+    }
+    if (newSummary !== undefined) {
+      changes = {
+        ...changes,
+        summary: newSummary
+      }
+    }
     this.setState({
-      selectedPagePart: undefined
+      selectedPagePart: {
+        ...this.selectedPagePart,
+        draftPage: {
+          ...this.selectedPagePart.draftPage,
+          ...changes,
+        }
+      }
     });
   }
 
@@ -174,7 +243,8 @@ class PageView extends React.Component<PageViewProps, PageState> {
           onClickProperties={this.handleClickProperties}
           onClickDetail={this.handleClickDetail}
           selectedPagePart={this.state.selectedPagePart}
-          onClickAwaySelectedPagePart={this.handleCancelSelection}></PageMain>
+          onClickAwaySelectedPagePart={this.handleCancelSelection}
+          onEditPageOverviewChange={this.handleOnEditPageOverviewChange}></PageMain>
         <PageOptions
           selectedPagePart={this.state.selectedPagePart}
           onDeletePagePart={this.handleDeletePagePart}

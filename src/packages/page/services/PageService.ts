@@ -2,6 +2,7 @@ import { Page } from "../entities/Page";
 
 export interface PageInterface {
   fetchPage(pageId: string): Promise<Page>;
+  setPageOverview(pageId: string, title: string, summary?: string): Promise<void>;
 }
 
 export class PageService {
@@ -16,6 +17,13 @@ export class PageService {
       throw this.missingPageInterface;
     }
     return this.pageInterface.fetchPage(pageId);
+  }
+
+  async setPageOverview(pageId: string, title: string, summary?: string):Promise<void> {
+    if (!this.pageInterface) {
+      throw this.missingPageInterface;
+    }
+    return this.pageInterface.setPageOverview(pageId, title, summary);
   }
 
   private get missingPageInterface():Error {

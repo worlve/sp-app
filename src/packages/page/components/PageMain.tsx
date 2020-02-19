@@ -17,6 +17,7 @@ export interface PageMainProps {
   onClickProperties?: () => void;
   onClickDetail?: (detailId: string) => void;
   onClickAwaySelectedPagePart?: () => void;
+  onEditPageOverviewChange?: (newTitle?: string, newSummary?: string) => void;
 }
 
 export enum PagePartElementId {
@@ -43,6 +44,20 @@ const PageMain = (props: PageMainProps):ReactElement => {
     props.onClickDetail(detailId);
   }
 
+  const handleOnTitleChange = (newTitle: string):void => {
+    if (!props.onEditPageOverviewChange) {
+      return;
+    }
+    props.onEditPageOverviewChange(newTitle, undefined);
+  }
+
+  const handleOnSummaryChange = (newSummary: string):void => {
+    if (!props.onEditPageOverviewChange) {
+      return;
+    }
+    props.onEditPageOverviewChange(undefined, newSummary);
+  }
+
   return (
     <CastPage>
       <CastHighlightWrapper
@@ -54,7 +69,9 @@ const PageMain = (props: PageMainProps):ReactElement => {
           titleTag={TitleTag.Header1}
           title={props.page ? props.page.title : undefined}
           summary={props.page ? props.page.summary : undefined}
-          editing={selectedPagePart().type === SelectedPagePartType.Overview && selectedPagePart().editing} />
+          editing={selectedPagePart().type === SelectedPagePartType.Overview && selectedPagePart().editing}
+          onTitleChange={(newTitle: string) => handleOnTitleChange(newTitle)}
+          onSummaryChange={(newSummary: string) => handleOnSummaryChange(newSummary)} />
       </CastHighlightWrapper>
       <CastSection
         titleTag={TitleTag.Header2}

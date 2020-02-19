@@ -18,6 +18,11 @@ export class MockPageController {
     return this.pages[pageId].copy();
   }
 
+  setPageOverview(pageId: string, title: string, summary: string) {
+    this.pages[pageId].title = title;
+    this.pages[pageId].summary = summary;
+  }
+
   setPage(page: Page) {
     const _page = page.copy();
     this.pages[page.id] = _page;

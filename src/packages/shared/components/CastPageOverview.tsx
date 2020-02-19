@@ -9,6 +9,8 @@ export interface CastPageOverviewProps {
   title?: string;
   summary?: string;
   editing?: boolean;
+  onTitleChange?: (newTitle: string) => void;
+  onSummaryChange?: (newSummary: string) => void;
 }
 
 const CastPageOverview: FunctionComponent<CastPageOverviewProps> = (props):ReactElement => {
@@ -27,7 +29,9 @@ const CastPageOverview: FunctionComponent<CastPageOverviewProps> = (props):React
       {props.editing &&
         <EditCastPageOverview
           title={props.title}
-          summary={props.summary}></EditCastPageOverview>
+          summary={props.summary}
+          onTitleChange={props.onTitleChange}
+          onSummaryChange={props.onSummaryChange}></EditCastPageOverview>
       }
     </React.Fragment>
   );

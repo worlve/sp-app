@@ -8,6 +8,14 @@ export class PageHttpInterface implements PageInterface {
     const data = await httpHandler.jsonGet(`api/pages/${pageId}`);
     return PageFactory.buildPage(data.result);
   }
+
+  async setPageOverview(pageId: string, title: string, summary?: string):Promise<void> {
+    const body = {
+      title,
+      summary,
+    };
+    await httpHandler.jsonPut(`api/pages/${pageId}`, undefined, undefined, body);
+  }
 }
 
 export default new PageHttpInterface();

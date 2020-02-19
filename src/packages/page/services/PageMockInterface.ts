@@ -12,6 +12,13 @@ export class PageMockInterface implements PageInterface {
     MockInterface.logResponse(this.fetchPage, { page: page.json() });
     return page;
   }
+
+  async setPageOverview(pageId: string, title: string, summary: string): Promise<void> {
+    MockInterface.logRequest(this.setPageOverview, { pageId, title, summary });
+    await MockInterface.wait(HttpRequestMethod.Put);
+    mockPageController.setPageOverview(pageId, title, summary);
+    MockInterface.logResponse(this.setPageOverview, {});
+  }
 }
 
 export default new PageMockInterface();
