@@ -25,6 +25,7 @@ export interface SelectedPagePart {
 }
 
 export interface PageOptionsProps {
+  disabledSave?: boolean;
   selectedPagePart?: SelectedPagePart;
   onDeletePagePart?: () => void;
   onEditPagePart?: () => void;
@@ -90,6 +91,7 @@ class PageOptions extends React.Component<PageOptionsProps, PageOptionsState> {
         }
         { this.selectedPagePart.editing &&
           <CastSaveOrCancelActions
+            disabledSave={this.props.disabledSave}
             onSave={this.props.onSelectionEditSave}
             onCancel={this.props.onSelectionEditCancel}></CastSaveOrCancelActions>
         }

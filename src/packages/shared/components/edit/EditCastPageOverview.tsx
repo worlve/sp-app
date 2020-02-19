@@ -50,7 +50,10 @@ const EditCastPageOverview: FunctionComponent<EditCastPageOverviewProps> = (prop
           value={titleValue}
           onChange={handleTitleChange}
           color="secondary"
-          fullWidth />
+          error={!titleValue}
+          helperText={!titleValue ? localizer.localeMap.page.edit.errorPageTitle : ''}
+          fullWidth
+          required />
       </div>
       <div className={classes.textFieldSpacing}>
         <TextField

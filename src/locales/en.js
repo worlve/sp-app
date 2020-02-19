@@ -18,7 +18,12 @@ export const localeEn = {
     edit: {
       pageTitle: 'Page Title',
       pageSummary: 'Page Summary',
+      errorPageTitle: 'Must provide a title',
     },
+    error: {
+      fetchPage: 'Cannot retrieve the page.',
+      savePage: 'Cannot save changes. Copy edited content to a safe place if retrying does not help.'
+    }
   },
   default: {
     search: 'Search',
@@ -27,5 +32,6 @@ export const localeEn = {
     saveHotKeys: 'Save (⇧⌘S)',
     cancel: 'Cancel',
     cancelHotKeys: 'Cancel (Esc)',
+    retry: 'Retry',
   },
 };

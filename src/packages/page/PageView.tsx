@@ -8,6 +8,8 @@ import PageMain, { PagePartElementId } from './components/PageMain';
 import PageOptions, { SelectedPagePartType, SelectedPagePart } from './components/PageOptions';
 import hotKeyListener, { keyCodeMap } from '../../utils/HotKeyListener';
 import { DraftPage } from './entities/DraftPage';
+import localizer from '../../utils/Localizer';
+import CastError from '../shared/components/CastError';
 
 export interface PageViewProps { 
   pageId: string; 
@@ -16,6 +18,9 @@ export interface PageViewProps {
 interface PageState {
   page?: Page;
   selectedPagePart?: SelectedPagePart;
+  errorRetryCallback?: () => void;
+  errorMessage?: string;
+  disabledSave?: boolean;
 }
 
 class PageView extends React.Component<PageViewProps, PageState> {
@@ -68,11 +73,18 @@ class PageView extends React.Component<PageViewProps, PageState> {
       if (callback) {
         callback(page);
       }
+      this.clearError();
       this.setState({
         page
       });
     } catch(err) {
       logger.logError(err);
+      this.setState({
+        errorRetryCallback: () => {
+          this.fetchPage(callback);
+        },
+        errorMessage: localizer.localeMap.page.error.fetchPage,
+      });
     }
   }
 
@@ -171,23 +183,34 @@ class PageView extends React.Component<PageViewProps, PageState> {
       case SelectedPagePartType.Overview:
         page.title = this.state.selectedPagePart.draftPage.title || '';
         page.summary = this.state.selectedPagePart.draftPage.summary || '';
-        this.setPageOverview(page.title, page.summary);
-        break;
+        return this.setPageOverview(page);
       default:
         logger.logError(new Error(`unexpected edit on selected page part: ${this.state.selectedPagePart.type}`));
         return;
     }
+  }
+
+  private clearError() {
     this.setState({
-      selectedPagePart: undefined,
-      page,
+      errorRetryCallback: undefined,
+      errorMessage: undefined,
     });
   }
 
-  private async setPageOverview(title: string, summary: string) {
+  private async setPageOverview(page: Page) {
     try {
-      await pageService.setPageOverview(this.props.pageId, title, summary);
+      await pageService.setPageOverview(this.props.pageId, page.title, page.summary);
+      this.clearError();
+      this.setState({
+        selectedPagePart: undefined,
+        page,
+      });
     } catch(err) {
       logger.logError(err);
+      this.setState({
+        errorRetryCallback: this.handleSaveEditPagePart,
+        errorMessage: localizer.localeMap.page.error.savePage,
+      });
     }
   }
 
@@ -212,6 +235,9 @@ class PageView extends React.Component<PageViewProps, PageState> {
         summary: newSummary
       }
     }
+    this.setState({
+      disabledSave: newTitle !== undefined && !newTitle,
+    });
     this.setState({
       selectedPagePart: {
         ...this.selectedPagePart,
@@ -245,7 +271,8 @@ class PageView extends React.Component<PageViewProps, PageState> {
           selectedPagePart={this.state.selectedPagePart}
           onClickAwaySelectedPagePart={this.handleCancelSelection}
           onEditPageOverviewChange={this.handleOnEditPageOverviewChange}></PageMain>
-        <PageOptions
+        {!this.state.errorMessage &&<PageOptions
+          disabledSave={this.state.disabledSave}
           selectedPagePart={this.state.selectedPagePart}
           onDeletePagePart={this.handleDeletePagePart}
           onEditPagePart={this.handleEditPagePart}
@@ -253,6 +280,11 @@ class PageView extends React.Component<PageViewProps, PageState> {
           onCancelSelection={this.handleCancelSelection}
           onSelectionEditCancel={this.handleCancelSelection}
           onSelectionEditSave={this.handleSaveEditPagePart}></PageOptions>
+        }
+        {this.state.errorMessage && <CastError
+          message={this.state.errorMessage}
+          onRetry={this.state.errorRetryCallback}></CastError>
+        }
       </div>
     );
   }

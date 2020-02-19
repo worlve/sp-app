@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export interface CastSaveOrCancelActionsProps {
+  disabledSave?: boolean;
   onSave?: () => void;
   onCancel?: () => void;
 }
@@ -44,6 +45,7 @@ const CastSaveOrCancelActions = (props: CastSaveOrCancelActionsProps):ReactEleme
       </Tooltip>
       <Tooltip title={localizer.localeMap.default.saveHotKeys} placement="top">
         <Fab
+          disabled={props.disabledSave}
           variant="extended"
           color="secondary"
           aria-label="save"
