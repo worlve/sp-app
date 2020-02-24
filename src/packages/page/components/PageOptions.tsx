@@ -6,7 +6,8 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import localizer from '../../../utils/Localizer';
 import { PagePartElementId } from './PageMain';
 import CastSaveOrCancelActions from '../../shared/components/CastSaveOrCancelActions';
-import { DraftPage } from '../entities/DraftPage';
+import { DraftPageOverview } from '../entities/DraftPageOverview';
+import { DraftPageDetail } from '../entities/DraftPageDetail';
 
 export enum SelectedPagePartType {
   Overview = 'overview',
@@ -21,7 +22,8 @@ export interface SelectedPagePart {
   id?: string;
   editing?: boolean;
   deleting?: boolean;
-  draftPage?: DraftPage;
+  draftPageOverview?: DraftPageOverview;
+  draftPageDetail?: DraftPageDetail;
 }
 
 export interface PageOptionsProps {

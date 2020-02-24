@@ -7,7 +7,7 @@ import PageHeader from './components/PageHeader';
 import PageMain, { PagePartElementId } from './components/PageMain';
 import PageOptions, { SelectedPagePartType, SelectedPagePart } from './components/PageOptions';
 import hotKeyListener, { keyCodeMap } from '../../utils/HotKeyListener';
-import { DraftPage } from './entities/DraftPage';
+import { DraftPageOverview } from './entities/DraftPageOverview';
 import localizer from '../../utils/Localizer';
 import CastError from '../shared/components/CastError';
 
@@ -138,12 +138,14 @@ class PageView extends React.Component<PageViewProps, PageState> {
       logger.logError(new Error('edit called on a page that does not exist'));
       return;
     }
-    const draftPage:DraftPage = {};
+    const draftPageOverview:DraftPageOverview = {};
     switch (this.state.selectedPagePart.type) {
       case SelectedPagePartType.Overview:
-        draftPage.title = this.state.page.title;
-        draftPage.summary = this.state.page.summary;
+        draftPageOverview.title = this.state.page.title;
+        draftPageOverview.summary = this.state.page.summary;
         break;
+      case SelectedPagePartType.Detail:
+        
       default:
         logger.logError(new Error(`unexpected edit on selected page part: ${this.state.selectedPagePart.type}`));
         return;
@@ -152,7 +154,7 @@ class PageView extends React.Component<PageViewProps, PageState> {
       selectedPagePart: {
         ...this.selectedPagePart,
         editing: true,
-        draftPage,
+        draftPageOverview,
       }
     });
   }
@@ -170,7 +172,7 @@ class PageView extends React.Component<PageViewProps, PageState> {
   }
 
   private handleSaveEditPagePart = () => {
-    if (!this.state.selectedPagePart || !this.state.selectedPagePart.draftPage) {
+    if (!this.state.selectedPagePart || !this.state.selectedPagePart.draftPageOverview) {
       logger.logInfo('handleSaveEditPagePart called without selected page part');
       return;
     }
@@ -181,8 +183,8 @@ class PageView extends React.Component<PageViewProps, PageState> {
     const page = this.state.page.copy();
     switch (this.state.selectedPagePart.type) {
       case SelectedPagePartType.Overview:
-        page.title = this.state.selectedPagePart.draftPage.title || '';
-        page.summary = this.state.selectedPagePart.draftPage.summary || '';
+        page.title = this.state.selectedPagePart.draftPageOverview.title || '';
+        page.summary = this.state.selectedPagePart.draftPageOverview.summary || '';
         return this.setPageOverview(page);
       default:
         logger.logError(new Error(`unexpected edit on selected page part: ${this.state.selectedPagePart.type}`));
@@ -241,8 +243,8 @@ class PageView extends React.Component<PageViewProps, PageState> {
     this.setState({
       selectedPagePart: {
         ...this.selectedPagePart,
-        draftPage: {
-          ...this.selectedPagePart.draftPage,
+        draftPageOverview: {
+          ...this.selectedPagePart.draftPageOverview,
           ...changes,
         }
       }

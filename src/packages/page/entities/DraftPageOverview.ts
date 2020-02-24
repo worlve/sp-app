@@ -1,4 +1,4 @@
-export interface DraftPage {
+export interface DraftPageOverview {
   title?: string;
   summary?: string;
 }
