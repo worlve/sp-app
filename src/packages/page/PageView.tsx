@@ -1,29 +1,34 @@
 import React, { ReactElement } from 'react';
+import { connect } from 'react-redux';
 import documentTitleBuilder from '../../utils/DocumentTitleBuilder';
 import { Page } from './entities/Page';
 import pageService from './services/PageService';
 import logger from '../../utils/Logger';
 import PageHeader from './components/PageHeader';
-import PageMain, { PagePartElementId } from './components/PageMain';
-import PageOptions, { SelectedPagePartType, SelectedPagePart } from './components/PageOptions';
+import PageMain from './components/PageMain';
+import { SelectedPagePartType, SelectedPagePart, PagePartElementId, SelectedPagePartAction } from './entities/SelectedPagePart';
 import hotKeyListener, { keyCodeMap } from '../../utils/HotKeyListener';
 import { DraftPageOverview } from './entities/DraftPageOverview';
 import localizer from '../../utils/Localizer';
 import CastError from '../shared/components/CastError';
+import PageState from './state/PageState';
+import { makeGetPage, makeGetPageError, makeGetPageLoading, makeGetSelectedPagePart } from './state/selectors';
+import { PageError } from './entities/PageError';
+import PageOptions from './components/PageOptions';
 
 export interface PageViewProps { 
-  pageId: string; 
+  pageId: string;
+  page?: Page;
+  loading?: boolean;
+  pageError?: PageError;
+  selectedPagePart?: SelectedPagePart;
 }
 
-interface PageState {
-  page?: Page;
-  selectedPagePart?: SelectedPagePart;
-  errorRetryCallback?: () => void;
-  errorMessage?: string;
+interface PageViewState {
   disabledSave?: boolean;
 }
 
-class PageView extends React.Component<PageViewProps, PageState> {
+class PageView extends React.Component<PageViewProps, PageViewState> {
   private hotKeyCallbackNumbers: number[];
 
   constructor(props: PageViewProps) {
@@ -57,8 +62,7 @@ class PageView extends React.Component<PageViewProps, PageState> {
         this.handleJumpToPagePart,
       )
     );
-    const callback = PageView.setDocumentTitle;
-    this.fetchPage(callback);
+    PageState.setPage(this.props.pageId);
   }
 
   componentWillUnmount() {
@@ -67,229 +71,107 @@ class PageView extends React.Component<PageViewProps, PageState> {
     }
   }
 
-  private async fetchPage(callback?: (page: Page) => void) {
-    try {
-      const page = await pageService.fetchPage(this.props.pageId);
-      if (callback) {
-        callback(page);
-      }
-      this.clearError();
-      this.setState({
-        page
-      });
-    } catch(err) {
-      logger.logError(err);
-      this.setState({
-        errorRetryCallback: () => {
-          this.fetchPage(callback);
-        },
-        errorMessage: localizer.localeMap.page.error.fetchPage,
-      });
-    }
-  }
-
   private static setDocumentTitle(page: Page) {
     document.title = documentTitleBuilder.buildTitle([page.title]);
   }
 
   private handleClickPageOverview = () => {
-    this.setState({
-      selectedPagePart: {
-        type: SelectedPagePartType.Overview,
-        elementId: PagePartElementId.PageOverview,
-      },
-    });
+    PageState.selectPagePart(SelectedPagePartType.Overview, PagePartElementId.PageOverview);
   }
 
   private handleClickProperties = () => {
-    this.setState({
-      selectedPagePart: {
-        type: SelectedPagePartType.Properties,
-        elementId: PagePartElementId.Properties,
-      },
-    });
+    PageState.selectPagePart(SelectedPagePartType.Properties, PagePartElementId.Properties);
   }
 
   private handleClickDetail = (detailId: string) => {
-    this.setState({
-      selectedPagePart: {
-        type: SelectedPagePartType.Detail,
-        elementId: detailId,
-        id: detailId,
-      },
-    });
+    PageState.selectPagePart(SelectedPagePartType.Detail, detailId, detailId);
   }
 
   private handleDeletePagePart = () => {
-    this.setState({
-      selectedPagePart: {
-        ...this.selectedPagePart,
-        deleting: true,
-      }
-    });
+    PageState.deletingSelectedPagePart();
   }
 
   private handleEditPagePart = () => {
-    if (!this.state.selectedPagePart) {
-      logger.logInfo('handleEditPagePart called without selected page part.  Likely due to hotkey event');
-      return;
-    }
-    if (!this.state.page) {
-      logger.logError(new Error('edit called on a page that does not exist'));
-      return;
-    }
-    const draftPageOverview:DraftPageOverview = {};
-    switch (this.state.selectedPagePart.type) {
-      case SelectedPagePartType.Overview:
-        draftPageOverview.title = this.state.page.title;
-        draftPageOverview.summary = this.state.page.summary;
-        break;
-      case SelectedPagePartType.Detail:
-        
-      default:
-        logger.logError(new Error(`unexpected edit on selected page part: ${this.state.selectedPagePart.type}`));
-        return;
-    }
-    this.setState({
-      selectedPagePart: {
-        ...this.selectedPagePart,
-        editing: true,
-        draftPageOverview,
-      }
-    });
+    PageState.editingSelectedPagePart();
   }
 
   private handleJumpToPagePart = () => {
-    const id = this.selectedPagePart.elementId;
-    const el = document.getElementById(id);
-    if (!el) {
-      logger.logError(new Error(`element at ${id} is not defined`));
-      return;
-    }
-    el.scrollIntoView({
-      behavior: 'smooth'
-    });
+    PageState.jumpToSelectedPagePart();
   }
 
   private handleSaveEditPagePart = () => {
-    if (!this.state.selectedPagePart || !this.state.selectedPagePart.draftPageOverview) {
-      logger.logInfo('handleSaveEditPagePart called without selected page part');
-      return;
-    }
-    if (!this.state.page) {
-      logger.logError(new Error('edit called on a page that does not exist'));
-      return;
-    }
-    const page = this.state.page.copy();
-    switch (this.state.selectedPagePart.type) {
+    switch (this.selectedPagePart.type) {
       case SelectedPagePartType.Overview:
-        page.title = this.state.selectedPagePart.draftPageOverview.title || '';
-        page.summary = this.state.selectedPagePart.draftPageOverview.summary || '';
-        return this.setPageOverview(page);
+        PageState.setPageOverview(draftPageOverview.title, draftPageOverview.summary);
       default:
-        logger.logError(new Error(`unexpected edit on selected page part: ${this.state.selectedPagePart.type}`));
+        logger.logError(new Error(`unexpected edit on selected page part: ${this.selectedPagePart.type}`));
         return;
     }
   }
 
-  private clearError() {
-    this.setState({
-      errorRetryCallback: undefined,
-      errorMessage: undefined,
-    });
-  }
-
-  private async setPageOverview(page: Page) {
-    try {
-      await pageService.setPageOverview(this.props.pageId, page.title, page.summary);
-      this.clearError();
-      this.setState({
-        selectedPagePart: undefined,
-        page,
-      });
-    } catch(err) {
-      logger.logError(err);
-      this.setState({
-        errorRetryCallback: this.handleSaveEditPagePart,
-        errorMessage: localizer.localeMap.page.error.savePage,
-      });
-    }
-  }
-
-
   private handleCancelSelection = () => {
-    this.setState({
-      selectedPagePart: undefined
-    });
+    PageState.deselectPagePart();
   }
 
   private handleOnEditPageOverviewChange = (newTitle?: string, newSummary?: string) => {
-    let changes = {};
-    if (newTitle !== undefined) {
-      changes = {
-        ...changes,
-        title: newTitle
-      };
-    }
-    if (newSummary !== undefined) {
-      changes = {
-        ...changes,
-        summary: newSummary
-      }
-    }
-    this.setState({
-      disabledSave: newTitle !== undefined && !newTitle,
-    });
-    this.setState({
-      selectedPagePart: {
-        ...this.selectedPagePart,
-        draftPageOverview: {
-          ...this.selectedPagePart.draftPageOverview,
-          ...changes,
-        }
-      }
-    });
+    PageState.canSaveSelectedPagePart(!!newTitle);
   }
 
-  get selectedPagePart():SelectedPagePart {
-    if (!this.state.selectedPagePart) {
+  private get selectedPagePart():SelectedPagePart {
+    if (!this.props.selectedPagePart) {
       return {
         type: SelectedPagePartType.Undefined,
         elementId: PagePartElementId.Undefined,
       };
     }
-    return this.state.selectedPagePart;
+    return this.props.selectedPagePart;
+  }
+
+  private getErrorHtml():ReactElement {
+    const errorRetryCallback = () => {
+      PageState.setPage(this.props.pageId);
+    };
+    const errorMessage = localizer.localeMap.page.error.fetchPage;
+    return <CastError message={errorMessage} onRetry={errorRetryCallback}></CastError>;
   }
 
   render():ReactElement {
+    if (!this.props.page) {
+      return <div className="PageView"></div>
+    }
+    PageView.setDocumentTitle(this.props.page);
     return (
       <div className="PageView">
-        <PageHeader page={this.state.page}></PageHeader>
+        <PageHeader page={this.props.page}></PageHeader>
         <PageMain
-          page={this.state.page}
-          onClickPageOverview={this.handleClickPageOverview}
-          onClickProperties={this.handleClickProperties}
-          onClickDetail={this.handleClickDetail}
-          selectedPagePart={this.state.selectedPagePart}
-          onClickAwaySelectedPagePart={this.handleCancelSelection}
-          onEditPageOverviewChange={this.handleOnEditPageOverviewChange}></PageMain>
-        {!this.state.errorMessage &&<PageOptions
-          disabledSave={this.state.disabledSave}
-          selectedPagePart={this.state.selectedPagePart}
-          onDeletePagePart={this.handleDeletePagePart}
-          onEditPagePart={this.handleEditPagePart}
-          onJumpToPagePart={this.handleJumpToPagePart}
-          onCancelSelection={this.handleCancelSelection}
-          onSelectionEditCancel={this.handleCancelSelection}
-          onSelectionEditSave={this.handleSaveEditPagePart}></PageOptions>
+          page={this.props.page}
+          selectedPagePart={this.selectedPagePart}></PageMain>
+        {!this.props.pageError && <PageOptions
+          disabledSave={this.props.selectedPagePart?.disableSave}
+          selectedPagePart={this.selectedPagePart}></PageOptions>
         }
-        {this.state.errorMessage && <CastError
-          message={this.state.errorMessage}
-          onRetry={this.state.errorRetryCallback}></CastError>
-        }
+        {this.props.pageError && this.getErrorHtml()}
       </div>
     );
   }
 }
 
-export default PageView;
+const makeMapStateToProps = () => {
+  const getPage = makeGetPage();
+  const getPageError = makeGetPageError();
+  const getPageLoading = makeGetPageLoading();
+  const getSelectedPagePart = makeGetSelectedPagePart();
+  const mapStateToProps = (state: any) => {
+    return {
+      page: getPage(state),
+      pageError: getPageError(state),
+      loading: getPageLoading(state),
+      selectedPagePart: getSelectedPagePart(state),
+    };
+  }
+  return mapStateToProps;
+}
+
+export default connect(
+  makeMapStateToProps,
+)(PageView);

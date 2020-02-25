@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { Page } from '../entities/Page';
 import CastPageOverview from '../../shared/components/CastPageOverview';
 import CastProperty from '../../shared/components/CastProperty';
@@ -8,68 +8,54 @@ import { TitleTag } from '../../shared/entities/TitleTag';
 import CastSection from '../../shared/components/CastSection';
 import CastHighlightWrapper from '../../shared/components/CastHighlightWrapper';
 import localizer from '../../../utils/Localizer';
-import { SelectedPagePart, SelectedPagePartType } from './PageOptions';
+import { SelectedPagePart, SelectedPagePartType, PagePartElementId, SelectedPagePartAction } from '../entities/SelectedPagePart';
+import PageState from '../state/PageState';
 
 export interface PageMainProps {
-  page?: Page;
-  selectedPagePart?: SelectedPagePart;
-  onClickPageOverview?: () => void;
-  onClickProperties?: () => void;
-  onClickDetail?: (detailId: string) => void;
-  onClickAwaySelectedPagePart?: () => void;
-  onEditPageOverviewChange?: (newTitle?: string, newSummary?: string) => void;
-}
-
-export enum PagePartElementId {
-  PageOverview = 'pageOverview',
-  Properties = 'pageProperties',
-  Undefined = 'undefined',
+  page: Page;
+  selectedPagePart: SelectedPagePart;
 }
 
 const PageMain = (props: PageMainProps):ReactElement => {
-  const selectedPagePart = ():SelectedPagePart => {
-    if (!props.selectedPagePart) {
-      return {
-        type: SelectedPagePartType.Undefined,
-        elementId: PagePartElementId.Undefined,
-      };
+  const [ draftTitle, setDraftTitle ] = useState(props.page.title);
+  const [ draftSummary, setDraftSummary ] = useState(props.page.summary);
+
+  const handleOnTitleChange = (newTitle: string) => {
+    PageState.draftTitle = newTitle;
+    setDraftTitle(newTitle);
+    if (!newTitle) {
+      PageState.canSaveSelectedPagePart(false);
     }
-    return props.selectedPagePart;
+    if (newTitle && !draftTitle) {
+      PageState.canSaveSelectedPagePart(true);
+    }
   }
 
-  const handleOnClickDetail = (detailId: string):void => {
-    if (!props.onClickDetail) {
-      return;
-    }
-    props.onClickDetail(detailId);
+  const handleOnSummaryChange = (newSummary: string) => {
+    PageState.draftSummary = newSummary;
+    setDraftSummary(newSummary);
   }
 
-  const handleOnTitleChange = (newTitle: string):void => {
-    if (!props.onEditPageOverviewChange) {
-      return;
-    }
-    props.onEditPageOverviewChange(newTitle, undefined);
-  }
+  const handleOnClickPageOverview = () => {
+    PageState.selectPagePart(SelectedPagePartType.Overview, PagePartElementId.PageOverview);
+  };
 
-  const handleOnSummaryChange = (newSummary: string):void => {
-    if (!props.onEditPageOverviewChange) {
-      return;
-    }
-    props.onEditPageOverviewChange(undefined, newSummary);
-  }
+  const handleOnClickProperties = () => {
+    PageState.selectPagePart(SelectedPagePartType.Properties, PagePartElementId.Properties);
+  };
 
   return (
     <CastPage>
       <CastHighlightWrapper
-        onClick={props.onClickPageOverview}
-        highlight={selectedPagePart().type === SelectedPagePartType.Overview}
+        onClick={handleOnClickPageOverview}
+        highlight={props.selectedPagePart.type === SelectedPagePartType.Overview}
         anchorId={PagePartElementId.PageOverview}
-        disableHover={selectedPagePart().editing}>
+        disableHover={!!props.selectedPagePart.action}>
         <CastPageOverview
           titleTag={TitleTag.Header1}
-          title={props.page ? props.page.title : undefined}
-          summary={props.page ? props.page.summary : undefined}
-          editing={selectedPagePart().type === SelectedPagePartType.Overview && selectedPagePart().editing}
+          title={draftTitle}
+          summary={draftSummary}
+          editing={props.selectedPagePart.type === SelectedPagePartType.Overview && props.selectedPagePart.action === SelectedPagePartAction.Editing}
           onTitleChange={(newTitle: string) => handleOnTitleChange(newTitle)}
           onSummaryChange={(newSummary: string) => handleOnSummaryChange(newSummary)} />
       </CastHighlightWrapper>
@@ -77,10 +63,10 @@ const PageMain = (props: PageMainProps):ReactElement => {
         titleTag={TitleTag.Header2}
         title={localizer.localeMap.page.properties}>
         <CastHighlightWrapper
-          onClick={props.onClickProperties}
-          highlight={selectedPagePart().type === SelectedPagePartType.Properties}
+          onClick={handleOnClickProperties}
+          highlight={props.selectedPagePart.type === SelectedPagePartType.Properties}
           anchorId={PagePartElementId.Properties}
-          disableHover={selectedPagePart().editing}>
+          disableHover={props.selectedPagePart.action === SelectedPagePartAction.Editing}>
           {props.page && props.page.properties.map(property => (
             <CastProperty
               key={property.key}
@@ -98,10 +84,7 @@ const PageMain = (props: PageMainProps):ReactElement => {
           {props.page && props.page.details.map(detail => (
             <PageDetailSection
               key={detail.id}
-              detail={detail}
-              onClickDetail={() => handleOnClickDetail(detail.id)}
-              onClickAwayDetail={props.onClickAwaySelectedPagePart}
-              highlight={props.selectedPagePart && props.selectedPagePart.id === detail.id} />
+              detail={detail} />
           ))}
         </div>
       </CastSection>

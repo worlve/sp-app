@@ -4,31 +4,12 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import localizer from '../../../utils/Localizer';
-import { PagePartElementId } from './PageMain';
 import CastSaveOrCancelActions from '../../shared/components/CastSaveOrCancelActions';
-import { DraftPageOverview } from '../entities/DraftPageOverview';
-import { DraftPageDetail } from '../entities/DraftPageDetail';
-
-export enum SelectedPagePartType {
-  Overview = 'overview',
-  Properties = 'properties',
-  Detail = 'detail',
-  Undefined = 'undefined',
-}
-
-export interface SelectedPagePart {
-  type: SelectedPagePartType;
-  elementId: string;
-  id?: string;
-  editing?: boolean;
-  deleting?: boolean;
-  draftPageOverview?: DraftPageOverview;
-  draftPageDetail?: DraftPageDetail;
-}
+import { SelectedPagePart, SelectedPagePartType, PagePartElementId, SelectedPagePartAction } from '../entities/SelectedPagePart';
 
 export interface PageOptionsProps {
   disabledSave?: boolean;
-  selectedPagePart?: SelectedPagePart;
+  selectedPagePart: SelectedPagePart;
   onDeletePagePart?: () => void;
   onEditPagePart?: () => void;
   onJumpToPagePart?: () => void;
@@ -84,14 +65,14 @@ class PageOptions extends React.Component<PageOptionsProps, PageOptionsState> {
   render():ReactElement {
     return (
       <div className="PageOptions">
-        {!this.selectedPagePart.editing && 
+        {this.selectedPagePart.action !== SelectedPagePartAction.Editing && 
           <CastPageActions
             hidden={!this.props.selectedPagePart}
             actions={actions}
             defaultActionKey={ActionKey.Edit}
             onActionSelect={this.handleOnActionSelect}></CastPageActions>
         }
-        { this.selectedPagePart.editing &&
+        { this.selectedPagePart.action === SelectedPagePartAction.Editing &&
           <CastSaveOrCancelActions
             disabledSave={this.props.disabledSave}
             onSave={this.props.onSelectionEditSave}

@@ -12,7 +12,7 @@ export class PageMockInterface implements PageInterface {
     await MockInterface.wait(HttpRequestMethod.Get);
     const page = mockPageController.getPage(pageId);
     MockInterface.logResponse(this.fetchPage, { page: page.json() });
-    if (errorCount < 0) {
+    if (errorCount < 3) {
       errorCount++;
       throw new Error('failed fetchPage');
     }
