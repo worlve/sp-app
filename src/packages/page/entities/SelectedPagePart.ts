@@ -23,3 +23,13 @@ export interface SelectedPagePart {
   action?: SelectedPagePartAction;
   disableSave?: boolean;
 }
+
+export const getSelectedPagePart = ({ selectedPagePart}: {selectedPagePart?: SelectedPagePart}):SelectedPagePart => {
+  if (!selectedPagePart) {
+    return {
+      type: SelectedPagePartType.Undefined,
+      elementId: PagePartElementId.Undefined,
+    };
+  }
+  return selectedPagePart;
+}

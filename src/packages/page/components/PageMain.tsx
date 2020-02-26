@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useState, useEffect } from 'react';
 import { Page } from '../entities/Page';
 import CastPageOverview from '../../shared/components/CastPageOverview';
 import CastProperty from '../../shared/components/CastProperty';
@@ -8,17 +8,26 @@ import { TitleTag } from '../../shared/entities/TitleTag';
 import CastSection from '../../shared/components/CastSection';
 import CastHighlightWrapper from '../../shared/components/CastHighlightWrapper';
 import localizer from '../../../utils/Localizer';
-import { SelectedPagePart, SelectedPagePartType, PagePartElementId, SelectedPagePartAction } from '../entities/SelectedPagePart';
+import { SelectedPagePart, SelectedPagePartType, PagePartElementId, SelectedPagePartAction, getSelectedPagePart } from '../entities/SelectedPagePart';
 import PageState from '../state/PageState';
 
 export interface PageMainProps {
-  page: Page;
-  selectedPagePart: SelectedPagePart;
+  page?: Page;
+  selectedPagePart?: SelectedPagePart;
 }
 
 const PageMain = (props: PageMainProps):ReactElement => {
-  const [ draftTitle, setDraftTitle ] = useState(props.page.title);
-  const [ draftSummary, setDraftSummary ] = useState(props.page.summary);
+  const pageTitle = props.page?.title;
+  const pageSummary = props.page?.summary;
+  const editing = getSelectedPagePart(props).type === SelectedPagePartType.Overview && getSelectedPagePart(props).action === SelectedPagePartAction.Editing;
+
+  const [ draftTitle, setDraftTitle ] = useState(pageTitle);
+  const [ draftSummary, setDraftSummary ] = useState(pageSummary);
+
+  useEffect(() => {
+    setDraftTitle(pageTitle);
+    setDraftSummary(pageSummary);
+  }, [pageTitle, pageSummary, editing]);
 
   const handleOnTitleChange = (newTitle: string) => {
     PageState.draftTitle = newTitle;
@@ -30,6 +39,14 @@ const PageMain = (props: PageMainProps):ReactElement => {
       PageState.canSaveSelectedPagePart(true);
     }
   };
+
+  useEffect(() => {
+    if (editing) {
+      PageState.draftTitle = pageTitle || '';
+      PageState.draftSummary = pageSummary || '';
+    }
+  // eslint-disable-next-line
+  }, [editing]);
 
   const handleOnSummaryChange = (newSummary: string) => {
     PageState.draftSummary = newSummary;
@@ -48,25 +65,26 @@ const PageMain = (props: PageMainProps):ReactElement => {
     <CastPage>
       <CastHighlightWrapper
         onClick={handleOnClickPageOverview}
-        highlight={props.selectedPagePart.type === SelectedPagePartType.Overview}
+        highlight={getSelectedPagePart(props).type === SelectedPagePartType.Overview}
         anchorId={PagePartElementId.PageOverview}
-        disableHover={!!props.selectedPagePart.action}>
+        disableHover={!!getSelectedPagePart(props).action}>
         <CastPageOverview
           titleTag={TitleTag.Header1}
           title={draftTitle}
           summary={draftSummary}
-          editing={props.selectedPagePart.type === SelectedPagePartType.Overview && props.selectedPagePart.action === SelectedPagePartAction.Editing}
+          editing={editing}
           onTitleChange={(newTitle: string) => handleOnTitleChange(newTitle)}
           onSummaryChange={(newSummary: string) => handleOnSummaryChange(newSummary)} />
       </CastHighlightWrapper>
       <CastSection
+        hideTitle={!props.page}
         titleTag={TitleTag.Header2}
         title={localizer.localeMap.page.properties}>
         <CastHighlightWrapper
           onClick={handleOnClickProperties}
-          highlight={props.selectedPagePart.type === SelectedPagePartType.Properties}
+          highlight={getSelectedPagePart(props).type === SelectedPagePartType.Properties}
           anchorId={PagePartElementId.Properties}
-          disableHover={props.selectedPagePart.action === SelectedPagePartAction.Editing}>
+          disableHover={getSelectedPagePart(props).action === SelectedPagePartAction.Editing}>
           {props.page && props.page.properties.map(property => (
             <CastProperty
               key={property.key}
@@ -76,6 +94,7 @@ const PageMain = (props: PageMainProps):ReactElement => {
         </CastHighlightWrapper>
       </CastSection>
       <CastSection
+        hideTitle={!props.page}
         titleTag={TitleTag.Header2}
         title={localizer.localeMap.page.details}>
         {/* @TODO: PageDetailSection.CastAccordian.ExpansionPanel requires 

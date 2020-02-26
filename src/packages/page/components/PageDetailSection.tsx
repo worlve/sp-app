@@ -3,11 +3,11 @@ import CastAccordion from '../../shared/components/CastAccordion';
 import { PageDetail } from '../entities/PageDetail';
 import CastPartition from '../../shared/components/CastPartition';
 import PageState from '../state/PageState';
-import { SelectedPagePartType, SelectedPagePart } from '../entities/SelectedPagePart';
+import { SelectedPagePartType, SelectedPagePart, getSelectedPagePart } from '../entities/SelectedPagePart';
 
 export interface PageDetailSectionProps {
   detail: PageDetail;
-  selectedPagePart: SelectedPagePart;
+  selectedPagePart?: SelectedPagePart;
 }
 
 const PageDetailSection = (props: PageDetailSectionProps):ReactElement => {
@@ -25,7 +25,7 @@ const PageDetailSection = (props: PageDetailSectionProps):ReactElement => {
       title={props.detail.title}
       summary={props.detail.summary}
       onClick={handleOnClickDetail}
-      highlight={props.selectedPagePart.id === props.detail.id}
+      highlight={getSelectedPagePart(props).id === props.detail.id}
       onCollapse={handleClickAwayDetail}>
       {props.detail && props.detail.partitions.map((partition, index) => (
         <CastPartition

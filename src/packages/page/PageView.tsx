@@ -4,7 +4,7 @@ import documentTitleBuilder from '../../utils/DocumentTitleBuilder';
 import { Page } from './entities/Page';
 import PageHeader from './components/PageHeader';
 import PageMain from './components/PageMain';
-import { SelectedPagePartType, SelectedPagePart, PagePartElementId } from './entities/SelectedPagePart';
+import { SelectedPagePart } from './entities/SelectedPagePart';
 import hotKeyListener, { keyCodeMap } from '../../utils/HotKeyListener';
 import localizer from '../../utils/Localizer';
 import CastError from '../shared/components/CastError';
@@ -24,9 +24,15 @@ export interface PageViewProps {
 const hotKeyCallbackNumbers: number[] = [];
 
 const PageView: React.FunctionComponent<PageViewProps> = (props) => {
+  const pageTitle = props.page?.title;
+
   useEffect(() => {
     PageState.setPage(props.pageId);
   }, [props.pageId]);
+
+  useEffect(() => {
+    setDocumentTitle(pageTitle || '');
+  }, [pageTitle]);
 
   useEffect(() => {
     hotKeyCallbackNumbers.push(
@@ -66,8 +72,8 @@ const PageView: React.FunctionComponent<PageViewProps> = (props) => {
     };
   }, []);
 
-  const setDocumentTitle = (page: Page) => {
-    document.title = documentTitleBuilder.buildTitle([page.title]);
+  const setDocumentTitle = (pageTitle: string) => {
+    document.title = documentTitleBuilder.buildTitle([pageTitle]);
   }
 
   const handleDeletePagePart = () => {
@@ -90,16 +96,6 @@ const PageView: React.FunctionComponent<PageViewProps> = (props) => {
     PageState.deselectPagePart();
   }
 
-  const getSelectedPagePart = ():SelectedPagePart => {
-    if (!props.selectedPagePart) {
-      return {
-        type: SelectedPagePartType.Undefined,
-        elementId: PagePartElementId.Undefined,
-      };
-    }
-    return props.selectedPagePart;
-  }
-
   const getErrorHtml = ():ReactElement => {
     const errorRetryCallback = () => {
       PageState.setPage(props.pageId);
@@ -108,24 +104,15 @@ const PageView: React.FunctionComponent<PageViewProps> = (props) => {
     return <CastError message={errorMessage} onRetry={errorRetryCallback}></CastError>;
   }
 
-  if (!props.page) {
-    return (
-      <div className="PageView">
-        {props.pageError && getErrorHtml()}
-      </div>
-    );
-  }
-  setDocumentTitle(props.page);
-
   return (
     <div className="PageView">
       <PageHeader page={props.page}></PageHeader>
       <PageMain
         page={props.page}
-        selectedPagePart={getSelectedPagePart()}></PageMain>
+        selectedPagePart={props.selectedPagePart}></PageMain>
       {!props.pageError && <PageOptions
         disabledSave={props.selectedPagePart?.disableSave}
-        selectedPagePart={getSelectedPagePart()}></PageOptions>
+        selectedPagePart={props.selectedPagePart}></PageOptions>
       }
       {props.pageError && getErrorHtml()}
     </div>

@@ -5,12 +5,12 @@ import EditIcon from '@material-ui/icons/Edit';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import localizer from '../../../utils/Localizer';
 import CastSaveOrCancelActions from '../../shared/components/CastSaveOrCancelActions';
-import { SelectedPagePart, SelectedPagePartAction } from '../entities/SelectedPagePart';
+import { SelectedPagePart, SelectedPagePartAction, getSelectedPagePart } from '../entities/SelectedPagePart';
 import PageState from '../state/PageState';
 
 export interface PageOptionsProps {
   disabledSave?: boolean;
-  selectedPagePart: SelectedPagePart;
+  selectedPagePart?: SelectedPagePart;
 }
 
 enum ActionKey {
@@ -54,14 +54,14 @@ const PageOptions = (props: PageOptionsProps):ReactElement => {
 
   return (
     <div className="PageOptions">
-      {props.selectedPagePart.action !== SelectedPagePartAction.Editing && 
+      {getSelectedPagePart(props).action !== SelectedPagePartAction.Editing && 
         <CastPageActions
           hidden={!props.selectedPagePart}
           actions={actions}
           defaultActionKey={ActionKey.Edit}
           onActionSelect={handleOnActionSelect}></CastPageActions>
       }
-      {props.selectedPagePart.action === SelectedPagePartAction.Editing &&
+      {getSelectedPagePart(props).action === SelectedPagePartAction.Editing &&
         <CastSaveOrCancelActions
           disabledSave={props.disabledSave}
           onSave={handleSave}

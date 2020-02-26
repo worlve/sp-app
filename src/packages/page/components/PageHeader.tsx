@@ -4,7 +4,7 @@ import CastAppBar from '../../shared/components/CastAppBar';
 import CastDrawer from '../../shared/components/CastDrawer';
 
 export interface PageHeaderProps {
-  page: Page;
+  page?: Page;
 }
 
 const PageHeader = (props: PageHeaderProps):ReactElement => {
@@ -16,7 +16,7 @@ const PageHeader = (props: PageHeaderProps):ReactElement => {
         openDrawer={openDrawer}
         onDrawerOpenChange={(open: boolean) => setOpenDrawer(open)}></CastDrawer>
       <CastAppBar
-        title={props.page.title}
+        title={props.page?.title}
         onSelectMenu={() => setOpenDrawer(true)}></CastAppBar>
     </div>
   );
