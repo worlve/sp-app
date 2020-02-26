@@ -1,6 +1,3 @@
-import { DraftPageOverview } from './DraftPageOverview';
-import { DraftPageDetail } from './DraftPageDetail';
-
 export enum PagePartElementId {
   PageOverview = 'pageOverview',
   Properties = 'pageProperties',

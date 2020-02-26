@@ -99,7 +99,20 @@ export class PageState {
     });
   }
 
-  async setPageOverview(title: string, summary?: string) {
+  async saveSelectedPagePartChanges() {
+    const selectedPagePart = this.forceGetSelectedPagePart();
+    switch (selectedPagePart.type) {
+      case SelectedPagePartType.Overview:
+        await this.setPageOverview(this.draftTitle, this.draftSummary);
+        break;
+      default:
+        const err = new Error(`unexpected selectedPagePart type: ${selectedPagePart.type}`)
+        logger.logError(err);
+        throw err;
+    }
+  }
+
+  private async setPageOverview(title: string, summary?: string) {
     const page = this.forceGetPage();
     try {
       store.dispatch(Actions.setPageLoading(true));

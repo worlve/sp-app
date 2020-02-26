@@ -29,12 +29,12 @@ const PageMain = (props: PageMainProps):ReactElement => {
     if (newTitle && !draftTitle) {
       PageState.canSaveSelectedPagePart(true);
     }
-  }
+  };
 
   const handleOnSummaryChange = (newSummary: string) => {
     PageState.draftSummary = newSummary;
     setDraftSummary(newSummary);
-  }
+  };
 
   const handleOnClickPageOverview = () => {
     PageState.selectPagePart(SelectedPagePartType.Overview, PagePartElementId.PageOverview);
@@ -84,7 +84,8 @@ const PageMain = (props: PageMainProps):ReactElement => {
           {props.page && props.page.details.map(detail => (
             <PageDetailSection
               key={detail.id}
-              detail={detail} />
+              detail={detail}
+              selectedPagePart={props.selectedPagePart} />
           ))}
         </div>
       </CastSection>
