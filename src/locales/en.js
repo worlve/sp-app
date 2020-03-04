@@ -19,6 +19,7 @@ export const localeEn = {
       pageTitle: 'Page Title',
       pageSummary: 'Page Summary',
       errorPageTitle: 'Must provide a title',
+      propertyValue: 'Property Value',
     },
     error: {
       fetchPage: 'Cannot retrieve the page.',

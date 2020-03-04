@@ -1,6 +1,7 @@
 export interface HotKeyCallbackOptions {
   callback: () => void;
   triggerHotKeys: Set<number>;
+  preventTrigger?: boolean;
 }
 
 export const keyCodeMap = {
@@ -38,6 +39,10 @@ class HotKeyListener {
     return this.currentCallbackNumber;
   }
 
+  preventCallbackTrigger(callbackNumber: number, preventTrigger: boolean) {
+    this.registeredCallbacks[callbackNumber].preventTrigger = preventTrigger;
+  }
+
   unregisterCallback(callbackNumber: number):boolean {
     if (!(callbackNumber in this.registeredCallbacks)) {
       return false;
@@ -47,15 +52,19 @@ class HotKeyListener {
   }
 
   private registerHeldKey(event: KeyboardEvent):void {
-    console.log(event.keyCode);
+    // console.log(event.keyCode);
     this.heldKeys.add(event.keyCode);
   }
 
   private handleKeyRelease():void {
     for (const callbackNumber in this.registeredCallbacks) {
-      if (this.isSubset(this.heldKeys, this.registeredCallbacks[callbackNumber].triggerHotKeys)) {
-        this.registeredCallbacks[callbackNumber].callback();
+      if (!this.isSubset(this.heldKeys, this.registeredCallbacks[callbackNumber].triggerHotKeys)) {
+        continue;
       }
+      if (this.registeredCallbacks[callbackNumber].preventTrigger) {
+        continue;
+      }
+      this.registeredCallbacks[callbackNumber].callback();
     }
     this.releaseKeys();
   }

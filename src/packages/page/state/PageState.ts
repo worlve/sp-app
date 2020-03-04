@@ -7,18 +7,24 @@ import { makeGetSelectedPagePart, makeGetPage } from './selectors';
 import { OutputSelector } from 'reselect';
 import { Page } from '../entities/Page';
 import { PageErrorType } from '../entities/PageError';
+import { PageProperty } from '../entities/PageProperty';
+import { PageDetail } from '../entities/PageDetail';
 
 export class PageState {
   private getSelectedPagePart: OutputSelector<any, SelectedPagePart | undefined, any>;
   private getPage: OutputSelector<any, Page | undefined, any>;
   draftTitle: string;
   draftSummary: string;
+  draftProperties: PageProperty[];
+  draftDetails: PageDetail[];
 
   constructor() {
     this.getSelectedPagePart = makeGetSelectedPagePart();
     this.getPage = makeGetPage();
     this.draftSummary = '';
     this.draftTitle = '';
+    this.draftProperties = [];
+    this.draftDetails = [];
   }
 
   async setPage(pageId: string) {
@@ -105,6 +111,12 @@ export class PageState {
       case SelectedPagePartType.Overview:
         await this.setPageOverview(this.draftTitle, this.draftSummary);
         break;
+      case SelectedPagePartType.Properties:
+        await this.setProperties(this.draftProperties);
+        break;
+      case SelectedPagePartType.Detail:
+        await this.setDetails(this.draftDetails);
+        break;
       default:
         const err = new Error(`unexpected selectedPagePart type: ${selectedPagePart.type}`)
         logger.logError(err);
@@ -121,6 +133,42 @@ export class PageState {
       const newPage = page.copy();
       newPage.title = title;
       newPage.summary = summary || '';
+      store.dispatch(Actions.setPage(newPage));
+      store.dispatch(Actions.setPageLoading(false));
+      await this.deselectPagePart();
+    } catch(err) {
+      store.dispatch(Actions.setPageError(PageErrorType.SavePage));
+      store.dispatch(Actions.setPageLoading(false));
+      logger.logError(err);
+    }
+  }
+
+  private async setProperties(properties: PageProperty[]) {
+    const page = this.forceGetPage();
+    try {
+      store.dispatch(Actions.setPageLoading(true));
+      store.dispatch(Actions.setPageError());
+      await pageService.setProperties(page.id, properties);
+      const newPage = page.copy();
+      newPage.properties = properties;
+      store.dispatch(Actions.setPage(newPage));
+      store.dispatch(Actions.setPageLoading(false));
+      await this.deselectPagePart();
+    } catch(err) {
+      store.dispatch(Actions.setPageError(PageErrorType.SavePage));
+      store.dispatch(Actions.setPageLoading(false));
+      logger.logError(err);
+    }
+  }
+
+  private async setDetails(details: PageDetail[]) {
+    const page = this.forceGetPage();
+    try {
+      store.dispatch(Actions.setPageLoading(true));
+      store.dispatch(Actions.setPageError());
+      await pageService.setDetails(page.id, details);
+      const newPage = page.copy();
+      newPage.details = details;
       store.dispatch(Actions.setPage(newPage));
       store.dispatch(Actions.setPageLoading(false));
       await this.deselectPagePart();
