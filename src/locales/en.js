@@ -20,6 +20,10 @@ export const localeEn = {
       pageSummary: 'Page Summary',
       errorPageTitle: 'Must provide a title',
       propertyValue: 'Property Value',
+      detailTitle: 'Detail Title',
+      detailSummary: 'Detail Summary',
+      detailContent: 'Detail Markdown',
+      errorDetailTitle: 'Must provide a title',
     },
     error: {
       fetchPage: 'Cannot retrieve the page.',

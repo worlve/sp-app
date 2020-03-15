@@ -23,7 +23,7 @@ const PageMain = (props: PageMainProps):ReactElement => {
   const pageDetails = props.page?.details;
   const editingPageOverview = getSelectedPagePart(props).type === SelectedPagePartType.Overview && getSelectedPagePart(props).action === SelectedPagePartAction.Editing;
   const editingProperties = getSelectedPagePart(props).type === SelectedPagePartType.Properties && getSelectedPagePart(props).action === SelectedPagePartAction.Editing;
-  const editingDetails = getSelectedPagePart(props).type === SelectedPagePartType.Detail && getSelectedPagePart(props).action === SelectedPagePartAction.Editing;
+  const editingDetails = getSelectedPagePart(props).type === SelectedPagePartType.Detail &&  getSelectedPagePart(props).action === SelectedPagePartAction.Editing;
 
   const [ draftTitle, setDraftTitle ] = useState(pageTitle);
   const [ draftSummary, setDraftSummary ] = useState(pageSummary);
@@ -126,7 +126,7 @@ const PageMain = (props: PageMainProps):ReactElement => {
           highlight={getSelectedPagePart(props).type === SelectedPagePartType.Properties}
           anchorId={PagePartElementId.Properties}
           disableHover={getSelectedPagePart(props).action === SelectedPagePartAction.Editing}>
-          {draftProperties && draftProperties.map((property, index) => (
+          {draftProperties?.map((property, index) => (
             <CastProperty
               key={property.key}
               propertyKey={property.key}
@@ -143,7 +143,7 @@ const PageMain = (props: PageMainProps):ReactElement => {
         {/* @TODO: PageDetailSection.CastAccordian.ExpansionPanel requires 
           an element with the class of 'root' surrounding it to display properly. */}
         <div className='root'>
-          {props.page && props.page.details.map((detail, index) => (
+          {draftDetails?.map((detail, index) => (
             <PageDetailSection
               key={detail.id}
               detail={detail}
