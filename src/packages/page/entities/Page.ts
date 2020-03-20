@@ -1,5 +1,8 @@
 import { PageProperty } from './PageProperty';
 import { PageDetail } from './PageDetail';
+import { Version } from './Version';
+import { PermissionType } from './PermissionType';
+import { PageTemplate } from './PageTemplate';
 
 export class Page {
   id: string;
@@ -7,20 +10,32 @@ export class Page {
   summary: string;
   properties: PageProperty[];
   details: PageDetail[];
+  version: Version;
+  pageTemplate: PageTemplate;
+  permissionType: PermissionType;
 
-  constructor(id: string, title: string) {
-    this.id = id;
-    this.title = title;
+  constructor(id?: string, title?: string, versionId?: string, pageTemplateId?: string, permissionType?: PermissionType) {
+    this.id = id || '';
+    this.title = title || '';
     this.summary = '';
     this.properties = [];
     this.details = [];
+    this.version = new Version(versionId || '');
+    this.pageTemplate = new PageTemplate(pageTemplateId || '');
+    if (!permissionType) {
+      this.permissionType = PermissionType.Private;
+    } else {
+      this.permissionType = permissionType;
+    }
   }
 
   copy():Page {
-    const page = new Page(this.id, this.title);
+    const page = new Page(this.id, this.title, this.version.id, this.pageTemplate.id, this.permissionType);
     page.summary = this.summary;
     page.properties = this.copyPageProperties();
     page.details = this.copyPageDetails();
+    page.version = this.version.copy();
+    page.pageTemplate = this.pageTemplate.copy();
     return page;
   }
 
@@ -47,6 +62,9 @@ export class Page {
       summary: this.summary,
       properties: this.jsonPageProperties(),
       details: this.jsonPageDetails(),
+      versionId: this.version.id,
+      pageTemplateId: this.pageTemplate.id,
+      permissionType: this.permissionType,
     };
   }
 

@@ -9,14 +9,14 @@ import { PageDetail } from '../entities/PageDetail';
 let errorCount = 0;
 
 export class PageMockInterface implements PageInterface {
-  async fetchPage(pageId: string):Promise<Page> {
-    MockInterface.logRequest(this.fetchPage, { pageId });
+  async getPage(pageId: string):Promise<Page> {
+    MockInterface.logRequest(this.getPage, { pageId });
     await MockInterface.wait(HttpRequestMethod.Get);
     const page = mockPageController.getPage(pageId);
-    MockInterface.logResponse(this.fetchPage, { page: page.json() });
+    MockInterface.logResponse(this.getPage, { page: page.json() });
     if (errorCount < 0) {
       errorCount++;
-      throw new Error('failed fetchPage');
+      throw new Error('failed getPage');
     }
     errorCount = 0;
     return page;

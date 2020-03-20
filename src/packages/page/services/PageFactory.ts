@@ -5,7 +5,7 @@ import { PageDetailFactory } from './PageDetailFactory';
 
 export class PageFactory {
   static buildPage(pageData: any):Page {
-    const page = new Page(pageData.id, pageData.title);
+    const page = new Page(pageData.id, pageData.title, pageData.versionId, pageData.pageTemplateId, pageData.permissionType);
     page.summary = pageData.summary;
     page.properties = PageFactory.buildPageProperties(pageData.properties);
     page.details = PageFactory.buildPageDetails(pageData.details);

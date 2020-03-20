@@ -3,7 +3,7 @@ import { PageProperty } from "../entities/PageProperty";
 import { PageDetail } from "../entities/PageDetail";
 
 export interface PageInterface {
-  fetchPage(pageId: string): Promise<Page>;
+  getPage(pageId: string): Promise<Page>;
   setPageOverview(pageId: string, title: string, summary?: string): Promise<void>;
   setProperties(pageId: string, properties?: PageProperty[]): Promise<void>;
   setDetails(pageId: string, details?: PageDetail[]): Promise<void>;
@@ -20,7 +20,7 @@ export class PageService {
     if (!this.pageInterface) {
       throw this.missingPageInterface;
     }
-    return this.pageInterface.fetchPage(pageId);
+    return this.pageInterface.getPage(pageId);
   }
 
   async setPageOverview(pageId: string, title: string, summary?: string):Promise<void> {
