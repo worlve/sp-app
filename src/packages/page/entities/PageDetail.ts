@@ -5,12 +5,14 @@ export class PageDetail {
   title: string;
   summary: string;
   partitions: PageDetailPartition[];
+  markdown?: string;
 
   constructor(id: string, title: string) {
     this.id = id;
     this.title = title;
     this.summary = '';
     this.partitions = [];
+    this.markdown = '';
   }
 
   copy():PageDetail {

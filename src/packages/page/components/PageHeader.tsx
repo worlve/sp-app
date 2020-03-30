@@ -16,7 +16,7 @@ const PageHeader = (props: PageHeaderProps):ReactElement => {
         openDrawer={openDrawer}
         onDrawerOpenChange={(open: boolean) => setOpenDrawer(open)}></CastDrawer>
       <CastAppBar
-        title={props.page ? props.page.title : undefined}
+        title={props.page?.title}
         onSelectMenu={() => setOpenDrawer(true)}></CastAppBar>
     </div>
   );

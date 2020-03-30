@@ -2,6 +2,7 @@ import React, { FunctionComponent, ReactElement } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
+import EditCastProperty from './edit/EditCastProperty';
 
 const useStyles = makeStyles({
   propertyWrapper: {
@@ -26,20 +27,32 @@ const useStyles = makeStyles({
 export interface CastPropertyProps {
   propertyKey: string;
   value?: string | number | undefined;
+  editing?: boolean;
+  onPropertyChange?: (newValue: string) => void;
 }
 
 const CastProperty: FunctionComponent<CastPropertyProps> = (props):ReactElement => {
   const classes = useStyles();
 
   return (
-    <div className={classes.propertyWrapper}>
-      <Typography className={classes.propertyKey} variant="body2">
-        {props.propertyKey} :
-      </Typography>
-      <Typography className={classes.propertyValue} variant="body1">
-        {props.value} 
-      </Typography>
-    </div>
+    <React.Fragment>
+      {!props.editing &&
+        <div className={classes.propertyWrapper}>
+          <Typography className={classes.propertyKey} variant="body2">
+            {props.propertyKey} :
+          </Typography>
+          <Typography className={classes.propertyValue} variant="body1">
+            {props.value} 
+          </Typography>
+        </div>
+      }
+      {props.editing &&
+        <EditCastProperty
+          propertyKey={props.propertyKey}
+          value={props.value}
+          onValueChange={props.onPropertyChange}></EditCastProperty>
+      }
+    </React.Fragment>
   );
 }
 

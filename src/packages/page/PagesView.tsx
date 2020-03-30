@@ -8,7 +8,7 @@ export interface PagesViewProps {}
 const PagesView = (props: PagesViewProps):ReactElement => {
   useEffect(() => {
     document.title = documentTitleBuilder.buildTitle([localizer.localeMap.routes.pages]);
-  });
+  }, []);
 
   return (
     <div className="PagesView">

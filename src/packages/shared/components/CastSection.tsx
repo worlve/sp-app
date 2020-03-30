@@ -5,6 +5,7 @@ import { Box, makeStyles, Divider } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 
 export interface CastSectionProps {
+  hideTitle?: boolean;
   titleTag?: TitleTag;
   title?: string;
 }
@@ -22,6 +23,10 @@ const useStyles = makeStyles({
 
 const CastSection: FunctionComponent<CastSectionProps> = (props):ReactElement => {
   const classes = useStyles();
+
+  if (props.hideTitle) {
+    return <Box className={classes.section}></Box>;
+  }
 
   return (
     <Box className={classes.section}>

@@ -14,6 +14,7 @@ export interface CastAccordionProps {
   onCollapse?: () => void;
   highlight?: boolean;
   elementId?: string;
+  disabled?: boolean;
 }
 
 const ExpansionPanel = withStyles((theme: Theme) => ({
@@ -38,11 +39,11 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
     },
-    heading: {
+    title: {
       flexBasis: '40%',
       flexShrink: 0,
     },
-    secondaryHeading: {
+    summary: {
       marginLeft: theme.spacing(1),
     },
     selectedSection: {
@@ -71,6 +72,9 @@ const CastAccordion: FunctionComponent<CastAccordionProps> = (props):ReactElemen
   const isSmallScreen = !!useMediaQuery(theme.breakpoints.down('xs'));
 
   const handleChange = () => {
+    if (props.disabled) {
+      return;
+    }
     if (props.highlight) {
       // @NOTE: the onClick event fires after onChange, so it undoes the collapse.
       // So we wait for the cycle to resolve the full event queue.
@@ -82,21 +86,28 @@ const CastAccordion: FunctionComponent<CastAccordionProps> = (props):ReactElemen
     }
   };
 
+  const handleClick = () => {
+    if (props.disabled || !props.onClick) {
+      return;
+    }
+    props.onClick();
+  };
+
   return (
     <ExpansionPanel
       id={props.elementId}
-      className={isSmallScreen ? '' : props.highlight ? classes.selectedSection : classes.hoverableSection}
-      expanded={!!props.highlight}
+      className={isSmallScreen || props.disabled ? '' : props.highlight ? classes.selectedSection : classes.hoverableSection}
+      expanded={!props.disabled && props.highlight}
       onChange={handleChange}
-      onClick={props.onClick}
+      onClick={handleClick}
       square={isSmallScreen}>
       { /* the reason the highlight is only on the summary is that the highlight animation stutters and lags
           when the panel details contains images */ }
       <ExpansionPanelSummary
-        expandIcon={isSmallScreen ? undefined : <ExpandMoreIcon />}
+        expandIcon={isSmallScreen || props.disabled ? undefined : <ExpandMoreIcon />}
         aria-controls="panel-content">
-        <Typography className={classes.heading} variant='body1'>{props.title}</Typography>
-        <Typography className={classes.secondaryHeading} variant='subtitle1'>{props.summary}</Typography>
+        <Typography className={classes.title} variant='body1'>{props.title}</Typography>
+        <Typography className={classes.summary} variant='subtitle1'>{props.summary}</Typography>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails className={classes.expansionDetails}>
       { /* the reason we do this is that anything complex inside the expansion, 
